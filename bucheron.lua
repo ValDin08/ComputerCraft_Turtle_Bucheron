@@ -1,3 +1,23 @@
+Programme : Turtle Bucheron
+Version : 2.0
+
+Patchnote : 
+1.0 : Version de base de la turtle bucheron.
+Rechargement et Déchargement manuel de la turtle.
+Refueling uniquement au reboot de la turtle.
+Ne peut gérer que 2 lignes d'arbre de longueur illimitée. La zone doit être délimitée par le type de bloc qui sera placé en slot 3.
+1.1 : Surveillance des quantités de materiaux dans l'inventaire.
+Surveillance des limites de zone en dessous de la turtle en plus de sa face.
+
+2.0 : Refonte du programme
+Ajout de la fonction de vidage/remplissage automatique de l'inventaire de la turtle.
+Ajout de la fonction d'utilisation de rangées multiples.
+Ajout du GPS.
+Suppression des blocs limites, guidage GPS complet.
+Elargissement de l'inventaire.
+Ajout du mode de marche manu/auto - Manuel pas encore oppérationel.
+
+******************************************************************************************************************************************************************************************************************************************************
 --Déclaration des variables
 	--Globales
 		local WorkingMode		=	""
@@ -191,11 +211,8 @@ function GetInWorkPosition()
 	if WorkingMode == "auto" then
 		--Comparaison de l'altitude
 		GetGPSCurrentLoc()
-		if TurtleGPSPos[2] == TurtleStartPos[2] then
-			--Décollage de la turtle
-			MoveUp()
-			GetGPSCurrentLoc()
-		end
+		--Décollage de la turtle
+		if TurtleGPSPos[2] == TurtleStartPos[2] then MoveUp() end
 
 		--Vérification du sens de démarrage de la turtle et déplacement pour rentrer au point le plus proche dans la zone de travail
 		if TurtleFacing == 1 then
@@ -416,7 +433,7 @@ end
 
 --COUPE ET REPLANTAGE
 function CutDown()
-	turtle.select(WoodType)
+	turtle.select(SWoodStock)
 	--Récupération du premier bloc et positionnement sous l'arbre
 	turtle.dig()
 	MoveForward(1)
@@ -430,6 +447,10 @@ function CutDown()
 		turtle.digDown()
 		MoveDown()
 	end
+	--Transfert des buches dans le stock turtle
+	for i=SWoodStock,(EWoodStock-1), 1 do
+		TransferIntraInventory(i, (i+1), turtle.getItemCount(i))
+	end
 	MoveBackward()
 	--Appel de la fonction de replantage
 	Replant()
@@ -439,11 +460,8 @@ function Replant()
 	--Replantage de la pousse
 	turtle.select(SSapplings)
 	turtle.place()
-	if turtle.getItemCount(ESapplings) > 0 then
-		TransferIntraInventory(ESapplings, SSapplings, 1)
-	elseif turtle.getItemCount(ESapplings) == 0 and turtle.getItemCount(ESapplings - 1) > 0 then
-		TransferIntraInventory(ESapplings - 1, SSapplings, 1)
-	end
+	TransferIntraInventory(ESapplings, SSapplings+1, 1)
+	TransferIntraInventory(SSapplings+1, SSapplings, 1)
 	--Evitement de la pousse plantée
 	turtle.digUp()
 	MoveUp()
@@ -480,26 +498,14 @@ function TransferExtraInventory(SlotFrom, Quantity)
 end
 
 function InventoryCheck()
-	--Déplacement des buches dans l'inventaire
-	if turtle.getItemCount(WoodType) > 1 then
-		for i=EWoodStock,SWoodStock, -1 do
-			if turtle.getItemCount(i) <= (64 - (turtle.getItemCount(WoodType) - 1)) then
-				TransferIntraInventory(WoodType, i, turtle.getItemCount(WoodType) - 1)
-				break
-			end
-		end
-	end
-	
 	--Vérification besoin de vider les buches
 	if turtle.getItemCount(SWoodStock) > 32 then
 		InventoryNeeds = InventoryNeeds + 100
 	end
-	
 	--Vérification besoin de récupérer du carburant
 	if turtle.getItemCount(SFuel) < 8 then
 		InventoryNeeds = InventoryNeeds + 10
 	end
-	
 	--Vérification besoin de récupérer des pousses
 	if turtle.getItemCount(SSapplings) < 8 then
 		InventoryNeeds = InventoryNeeds + 1
