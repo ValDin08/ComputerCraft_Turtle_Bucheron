@@ -1,11 +1,14 @@
 --Déclaration des variables
-local Pousses	= 1
-local Buches	= 2
-local Limites	= 3
-local PasDePousse
+local Pousses		=	1
+local Buches		=	2
+local Limites		=	3
+local PasDePousse	=	0
+local InventoryNOK	=	0
 
 --Rechargement en carburant de la turtle
-turtle.refuel()
+if (turtle.getFuelLevel() < 20) then
+	turtle.refuel()
+end
 
 --Création des fonctions
 function CheckArbrePousse(Emplacement)
@@ -20,7 +23,7 @@ end
 
 function CheckLimitesZone(Emplacement)
 	turtle.select(Emplacement)
-	if turtle.compare() then
+	if turtle.compare() or turtle.compareDown() then
 		turtle.turnLeft()
 		turtle.forward()
 		turtle.forward()
@@ -83,10 +86,24 @@ function ViderInventaire()
 end
 
 --Programme
---Lancer la boucle de déplacement
 print("Charger la turtle : 1 = max pousses, 2 = 1 buche, 3 = 1 bloc limite")
-print("Démarrage de la turtle dans 30s")
-os.sleep(30)
-while true do
+print("Vérification du matériel nécessaire en cours")
+os.sleep(5)
+
+--Vérification inventaire
+if (turtle.getItemCount(Pousses) < 5) or (turtle.getItemCount(Buches) == 0) or (turtle.getItemCount(Limites) == 0) then
+	print("Chargez la turtle, puis relancer le système")
+	InventoryNOK = 1
+else
+--Inventaire OK, préparation turtle
+	print("Inventaire OK!")
+	os.sleep(2)
+	print("Démarrage de la turtle dans 10s")
+end
+
+os.sleep(10)
+
+--Démarrage turtle
+while (turtle.getFuelLevel() > 20) and (InventoryNOK == 0) do
 	Deplacement()
 end
