@@ -1,6 +1,14 @@
 # ComputerCraft_Turtle_Bucheron
 Programme ComputerCraft pour Turtle bucheron
 
+Installation du programme : 
+  - Dans Minecraft, commencez par placer une turtle dans votre monde, cela va créer un dossier sur votre PC.
+  - Dans la turtle, tapez la commande *id*, vous obtiendrez l'ID de votre turtle (numéro unique).
+  - Téléchargez le fichier *bucheron.lua*, puis copiez le dans : **saves/*MONDE*/computercraft/computer/*id*/** (le dossier *saves* se trouve dans votre dossier d'instance Minecraft/FTB).
+  - Dans votre fichier *startup.lua* de ce même dossier, vous pouvez taper *shell.run("bucheron")* (peut dépendre de votre version de CC:Tweaked, un simple *bucheron()* peut faire l'affaire).
+  - Autre solution : copiez le code contenu dans *bucheron.lua* dans votre *startup.lua*.
+  - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
+
 ---
 
 # Programme : Turtle Bucheron
@@ -31,3 +39,7 @@ Sortie de la zone de bucheronage pour vidage et remplissage inventaire.
 Dépendante du système GPS. Un GPS doit être ajouté à la Turtle et un satellite doit être mis en place afin de localiser la Turtle.
 
 Le schéma de construction du satellite et ses programmes GPS sont disponibles sur GitHub.
+
+**`ATTENTION ! Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :`**
+
+<img width="1277" height="347" alt="image" src="https://github.com/user-attachments/assets/bfb4dfd4-5171-4da2-b876-b24ad4e813f6" />
