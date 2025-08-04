@@ -12,7 +12,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 2.0
+## Version : 2.1
 
 ### Patchnote : 
 
@@ -25,13 +25,15 @@ La zone doit être délimitée par le type de bloc qui sera placé en slot 3.*
 *1.1 : Surveillance des quantités de materiaux dans l'inventaire.  
 Surveillance des limites de zone en dessous de la turtle en plus de sa face.*
 
-**2.0 : Refonte du programme  
+*2.0 : Refonte du programme  
 Ajout de la fonction de vidage/remplissage automatique de l'inventaire de la turtle.  
 Ajout de la fonction d'utilisation de rangées multiples.  
 Ajout du GPS.  
 Suppression des blocs limites, guidage GPS complet.  
 Elargissement de l'inventaire.  
-Ajout du mode de marche manu/auto - `Manuel pas encore opérationnel.`**
+Ajout du mode de marche manu/auto - `Manuel pas encore opérationnel.`*
+
+**2.1 : Gestion de l'inventaire fluidifiée.**
 
 ---
 
