@@ -12,7 +12,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 2.3
+## Version : 3.0
 
 ### Patchnote : 
 
@@ -38,7 +38,9 @@ Ajout du mode de marche manu/auto - `Manuel pas encore opérationnel.`*
 *2.2 : Casse non prise en compte dans les entrées de strings.  
 Affichage de la version du programme au démarrage de la turtle.*
 
-**2.3 : Correction du bug de redescente après la coupe d'un arbre.**
+*2.3 : Correction du bug de redescente après la coupe d'un arbre.*
+
+**3.0 : Intégration de la communication réseau avec le serveur.**
 
 ---
 > [!NOTE]
@@ -50,6 +52,19 @@ Affichage de la version du programme au démarrage de la turtle.*
 > [!TIP]
 > Le schéma de construction du satellite et ses programmes GPS sont disponibles sur GitHub.
 
+> [!IMPORTANT]
+> Dépendante du système Serveur et au réseau CraftNET. Un Serveur doit être programmé pour communiquer avec la Turtle.
+
+> [!TIP]
+> Le programme du serveur bucheron 1.0 est disponible sur GitHub.
+
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
 > <img width="1277" height="347" alt="image" src="https://github.com/user-attachments/assets/bfb4dfd4-5171-4da2-b876-b24ad4e813f6" />
+
+
+> [!WARNING]
+> Pour le bon fonctionnement de votre Turtle, il faut adapter l'ID du serveur et le côté où se situe votre Modem :
+> <img width="582" height="156" alt="image" src="https://github.com/user-attachments/assets/5cf5128d-7e1a-4f72-abd1-430c1a21915d" />
+
+
