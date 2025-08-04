@@ -12,7 +12,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 2.1
+## Version : 2.2
 
 ### Patchnote : 
 
@@ -33,15 +33,21 @@ Suppression des blocs limites, guidage GPS complet.
 Elargissement de l'inventaire.  
 Ajout du mode de marche manu/auto - `Manuel pas encore opérationnel.`*
 
-**2.1 : Gestion de l'inventaire fluidifiée.**
+*2.1 : Gestion de l'inventaire fluidifiée.*
+
+**2.2 : Casse non prise en compte dans les entrées de strings.  
+Affichage de la version du programme au démarrage de la turtle.**
 
 ---
+> [!NOTE]
+> Sortie de la zone de bucheronage pour vidage et remplissage inventaire.
 
-Sortie de la zone de bucheronage pour vidage et remplissage inventaire.
-Dépendante du système GPS. Un GPS doit être ajouté à la Turtle et un satellite doit être mis en place afin de localiser la Turtle.
+> [!IMPORTANT]
+> Dépendante du système GPS. Un GPS doit être ajouté à la Turtle et un satellite doit être mis en place afin de localiser la Turtle.
 
-Le schéma de construction du satellite et ses programmes GPS sont disponibles sur GitHub.
+> [!TIP]
+> Le schéma de construction du satellite et ses programmes GPS sont disponibles sur GitHub.
 
-**`ATTENTION ! Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :`**
-
-<img width="1277" height="347" alt="image" src="https://github.com/user-attachments/assets/bfb4dfd4-5171-4da2-b876-b24ad4e813f6" />
+> [!WARNING]
+> Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
+> <img width="1277" height="347" alt="image" src="https://github.com/user-attachments/assets/bfb4dfd4-5171-4da2-b876-b24ad4e813f6" />
