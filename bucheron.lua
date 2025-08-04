@@ -1,7 +1,7 @@
 --Déclaration des variables
 	--Globales
-		local WorkingMode		=	""
-		local ProgramVersion	=	"2.2"
+		local WorkingMode		= ""
+		local ProgramVersion	=	"2.3"
 	--Inventaire
 		--Inventaire flottant (S = Start / E = End)
 			local SSapplings	=	1	--Début du stock de pousses d'arbre
@@ -166,12 +166,6 @@ function GetStartLocation()
 		elseif (TurtleGPSPos[1]) < (TurtleStartPos[1]) then TurtleFacing = 4
 		end
 		turtle.back()
-		turtle.turnLeft()
-		turtle.turnRight()
-		turtle.turnRight()
-		turtle.turnLeft()
-		turtle.up()
-		turtle.down()
 	elseif WorkingMode == "manu" then
 		print("Entrez point de départ x.")
 		TurtleStartPos[1] = tonumber(read())
@@ -356,6 +350,12 @@ function CheckFrontBlock()
 	GetGPSCurrentLoc()	
 end
 
+function CheckBottomBlock()
+	--Analyse du bloc sous la turtle
+	local BlockDetected, BlockName = turtle.inspectDown()
+	if BlockDetected == true then return BlockName.name end
+end
+
 function CheckWorkZoneLimits()
 	--Réacquisition de la position GPS
 	GetGPSCurrentLoc()
@@ -413,6 +413,7 @@ function Movement()
 		elseif TypeOfMvmt == 2 then DodgeSappling()
 		end
 	end	
+	CheckWorkZoneLimits()
 end
 
 --COUPE ET REPLANTAGE
@@ -421,16 +422,19 @@ function CutDown()
 	--Récupération du premier bloc et positionnement sous l'arbre
 	turtle.dig()
 	MoveForward(1)
+	
 	--Minage de l'arbre complet
 	while turtle.detectUp() do
 		turtle.digUp()
 		MoveUp()
 	end
+	
 	--Redescente au sol
-	while TurtleGPSPos[2] > (TurtleStartPos[2]+1) do
+	while CheckBottomBlock() ~= "minecraft:dirt" do
 		turtle.digDown()
 		MoveDown()
 	end
+	
 	MoveBackward()
 	--Appel de la fonction de replantage
 	Replant()
