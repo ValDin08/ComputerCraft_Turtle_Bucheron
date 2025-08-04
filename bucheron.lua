@@ -1,50 +1,50 @@
 --Déclaration des variables
 	--Globales
-		local WorkingMode		=	""		--Mode de fonctionnement de la turtle
-		local ProgramVersion	=	"3.2"	--Version actuelle du programme
+		local WorkingMode	=	""		--Mode de fonctionnement de la turtle
+		local ProgramVersion	=	"3.3"		--Version actuelle du programme
 		local TreeHarvested 	=	0		--Nombre d'arbres récoltés sur la run en cours
 		
 	--Réseau
 		local LocalID			=	16		--ID de la turtle
 		local ServerID			=	11		--ID du serveur
 		local ModemSide			=	"right"	--Côté du modem sur la turtle
-		local ServerConnected	=	false	--Serveur ateignable et connecté à la turtle
+		local ServerConnected		=	false	--Serveur ateignable et connecté à la turtle
 		local ServerRequest		=	false	--Requête du serveur reçue par la turtle
 		local TurtleRequest		=	false	--Requête de la turtle à envoyer au serveur
-		local ServerAuthorized	=	false	--Serveur connecté à la turtle et autorisant le travail
+		local ServerAuthorized		=	false	--Serveur connecté à la turtle et autorisant le travail
 		local ID, Message					--Message reçu depuis RedNET
-		local CurrentFuelLevel	=	0		--Niveau de carburant actuel
+		local CurrentFuelLevel		=	0		--Niveau de carburant actuel
 		
 	--Inventaire
 		--Inventaire flottant (S = Start / E = End)
 			local SSapplings	=	1	--Début du stock de pousses d'arbre
 			local ESapplings	=	3	--Fin du stock de pousses d'arbre
-			local SFuel			=	5	--Début du réservoir à carburant
-			local EFuel			=	6	--Fin du réservoir à carburant
+			local SFuel		=	5	--Début du réservoir à carburant
+			local EFuel		=	6	--Fin du réservoir à carburant
 			local SWoodStock	=	8	--Début du stock de buches
 			local EWoodStock	=	16	--Fin du stock de buches
 		--Inventaire fixe
 			local WoodType		=	4	--Type de bois à récolter
 			
-		local InventoryNOK		=	0	--Inventaire pas prêt pour démarrage de la turtle
+		local InventoryNOK	=	0	--Inventaire pas prêt pour démarrage de la turtle
 		local InventoryNeeds	=	0	--Type de besoin de l'inventaire lors de la prochaine sortie (3 bits --> 1 = Pousses à recharger / 10 = Carburant à recharger / 100 = Buches à déposer)
 			
 	--Mouvements
-		local RangesQty			=	3	--Nombre de rangées gérées par la turtle
-		local RangesDone		=	0	--Nombre de rangées où la turtle est passée
-		local TypeOfMvmt		=	0	--Type de mouvement (0 = Stop / 1 = Avance normale / 2 = Evitement pousse / 3 = Virage gauche / 4 = Virage droit / 5 = guidage GPS)
-		local FrontBlock		=	0	--Bloc frontal (0 = Vide / 1 = Pousse / 2 = Arbre prêt à couper / 3 = Limite)
+		local RangesQty		=	3	--Nombre de rangées gérées par la turtle
+		local RangesDone	=	0	--Nombre de rangées où la turtle est passée
+		local TypeOfMvmt	=	0	--Type de mouvement (0 = Stop / 1 = Avance normale / 2 = Evitement pousse / 3 = Virage gauche / 4 = Virage droit / 5 = guidage GPS)
+		local FrontBlock	=	0	--Bloc frontal (0 = Vide / 1 = Pousse / 2 = Arbre prêt à couper / 3 = Limite)
 		
 		--Coordonnées
 			local TurtleGPSPos	=	{0, 0, 0}		--Position GPS actuelle de la turle
-			local TurtleStartPos=	{-81, 64, 48}	--Position GPS de démarrage de la turtle
+			local TurtleStartPos	=	{-81, 64, 48}	--Position GPS de démarrage de la turtle
 			local TurtleExitPos	=	{0, 0, 0}		--Position GPS d'entrée/sortie de la zone de travail
 			local TurtleFacing	=	0				--Orientation de la turtle (1 = Nord / 2 = Sud / 3 = Est / 4 = Ouest)
 			local FuelChest		=	{-79, 64, 47}	--Position du coffre de carburant
 			local LogsChest		=	{-79, 64, 50}	--Position du coffre de bois
 			local SapsChest		=	{-83, 64, 48}	--Position du coffre des pousses d'arbre
-			local xLine			=	{-88, -70, 0}	--Zone de travail x (min, max, pas utilisé)
-			local zLine			=	{53 ,63 , 0}	--Zone de travail z (min, max, pas utilisé)
+			local xLine		=	{-88, -70, 0}	--Zone de travail x (min, max, pas utilisé)
+			local zLine		=	{53 ,63 , 0}	--Zone de travail z (min, max, pas utilisé)
 			
 			--Grille des arbres (à gauche de la grille se situe le stand de retrait de la turtle)
 			local C7, B7, A7	=	{-73, 65, 56}, {-73, 65, 58}, {-73, 65, 60}
@@ -334,10 +334,19 @@ function ExitWorkZone()
 			MoveBackward()
 			TurnLeft()
 		end
+	elseif not ServerAuthorized then
+		MoveForward(math.abs(TurtleGPSPos[3]-TurtleStartPos[3]))
+		TurnLeft()
+		TurnLeft()
 	end
 	
 	--Retour à la position de travail
-	GetInWorkPosition()
+	while not ServerAuthorized do
+		CraftNET()
+	end
+	
+	if ServerAuthorized then GetInWorkPosition() end
+	
 end
 
 --ANALYSE DE L'ENVIRONNEMENT
@@ -519,10 +528,10 @@ end
 --Programme de bucheronage
 function LumberJacking()
 	CraftNET()
-	while ServerAuthorized do
+	while ServerConnected do
 		FuelManagement()
 		InventoryCheck()
-		if InventoryNeeds == 0 then
+		if InventoryNeeds == 0 and ServerAuthorized then
 			Movement()
 		else
 			ExitWorkZone()
@@ -564,7 +573,7 @@ function CraftNET()
 	
 	os.sleep(0,5)
 	--Envoi au serveur de la trame de position actuelle de la turtle
-	rednet.send(ServerID, {RequestID = 110, CurrentTurtlePosition = TurtleGPSPos , TurtleOrientation = TurtleFacing , TreeHarvestedCurrentRun = TreeHarvested , FuelLevel = CurrentFuelLevel})
+	rednet.send(ServerID, {RequestID = 110, ProgramVersion = ProgramVersion, CurrentTurtlePosition = TurtleGPSPos , TurtleOrientation = TurtleFacing , TreeHarvestedCurrentRun = TreeHarvested , FuelLevel = CurrentFuelLevel})
 
 end
 
