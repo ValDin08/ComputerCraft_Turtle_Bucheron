@@ -191,8 +191,11 @@ function GetInWorkPosition()
 	if WorkingMode == "auto" then
 		--Comparaison de l'altitude
 		GetGPSCurrentLoc()
-		--Décollage de la turtle
-		if TurtleGPSPos[2] == TurtleStartPos[2] then MoveUp() end
+		if TurtleGPSPos[2] == TurtleStartPos[2] then
+			--Décollage de la turtle
+			MoveUp()
+			GetGPSCurrentLoc()
+		end
 
 		--Vérification du sens de démarrage de la turtle et déplacement pour rentrer au point le plus proche dans la zone de travail
 		if TurtleFacing == 1 then
@@ -413,7 +416,7 @@ end
 
 --COUPE ET REPLANTAGE
 function CutDown()
-	turtle.select(SWoodStock)
+	turtle.select(WoodType)
 	--Récupération du premier bloc et positionnement sous l'arbre
 	turtle.dig()
 	MoveForward(1)
@@ -427,10 +430,6 @@ function CutDown()
 		turtle.digDown()
 		MoveDown()
 	end
-	--Transfert des buches dans le stock turtle
-	for i=SWoodStock,(EWoodStock-1), 1 do
-		TransferIntraInventory(i, (i+1), turtle.getItemCount(i))
-	end
 	MoveBackward()
 	--Appel de la fonction de replantage
 	Replant()
@@ -440,8 +439,11 @@ function Replant()
 	--Replantage de la pousse
 	turtle.select(SSapplings)
 	turtle.place()
-	TransferIntraInventory(ESapplings, SSapplings+1, 1)
-	TransferIntraInventory(SSapplings+1, SSapplings, 1)
+	if turtle.getItemCount(ESapplings) > 0 then
+		TransferIntraInventory(ESapplings, SSapplings, 1)
+	elseif turtle.getItemCount(ESapplings) == 0 and turtle.getItemCount(ESapplings - 1) > 0 then
+		TransferIntraInventory(ESapplings - 1, SSapplings, 1)
+	end
 	--Evitement de la pousse plantée
 	turtle.digUp()
 	MoveUp()
@@ -478,14 +480,26 @@ function TransferExtraInventory(SlotFrom, Quantity)
 end
 
 function InventoryCheck()
+	--Déplacement des buches dans l'inventaire
+	if turtle.getItemCount(WoodType) > 1 then
+		for i=EWoodStock,SWoodStock, -1 do
+			if turtle.getItemCount(i) <= (64 - (turtle.getItemCount(WoodType) - 1)) then
+				TransferIntraInventory(WoodType, i, turtle.getItemCount(WoodType) - 1)
+				break
+			end
+		end
+	end
+	
 	--Vérification besoin de vider les buches
 	if turtle.getItemCount(SWoodStock) > 32 then
 		InventoryNeeds = InventoryNeeds + 100
 	end
+	
 	--Vérification besoin de récupérer du carburant
 	if turtle.getItemCount(SFuel) < 8 then
 		InventoryNeeds = InventoryNeeds + 10
 	end
+	
 	--Vérification besoin de récupérer des pousses
 	if turtle.getItemCount(SSapplings) < 8 then
 		InventoryNeeds = InventoryNeeds + 1
