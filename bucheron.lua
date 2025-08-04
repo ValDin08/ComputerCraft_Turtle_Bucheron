@@ -1,6 +1,7 @@
 --Déclaration des variables
 	--Globales
 		local WorkingMode		=	""
+		local ProgramVersion	=	"2.2"
 	--Inventaire
 		--Inventaire flottant (S = Start / E = End)
 			local SSapplings	=	1	--Début du stock de pousses d'arbre
@@ -149,7 +150,7 @@ end
 function GetStartLocation()
 	--Demande de démarrage manuel ou automatique
 	print("Fonctionnement 'auto' ou 'manu'?")
-	WorkingMode = read()
+	WorkingMode = string.lower(read())
 
 	if WorkingMode == "auto" then
 		--Acquisition de la position de départ
@@ -173,13 +174,13 @@ function GetStartLocation()
 		turtle.down()
 	elseif WorkingMode == "manu" then
 		print("Entrez point de départ x.")
-		TurtleStartPos[1] = read()
+		TurtleStartPos[1] = tonumber(read())
 		print("Entrez point de départ y.")
-		TurtleStartPos[2] = read()
+		TurtleStartPos[2] = tonumber(read())
 		print("Entrez point de départ z.")
-		TurtleStartPos[3] = read()
+		TurtleStartPos[3] = tonumber(read())
 		print("Entrez orientation de départ : 1 = Nord, 2 = Sud, 3 = Est, 4 = Ouest.")
-		TurtleFacing = read()
+		TurtleFacing = tonumber(read())
 	end
 	print("Calibrage position terminée.")
 	GetGPSCurrentLoc()
@@ -223,11 +224,11 @@ function GetInWorkPosition()
 	elseif WorkingMode == "manu" then
 		local ManualCoordinates = {0, 0, 0}
 		print("Entrez coordonnée x cible. - INACTIF EN v2.0")
-		ManualCoordinates[1] = read()
+		ManualCoordinates[1] = tonumber(read())
 		print("Entrez coordonnée y cible.")
-		ManualCoordinates[2] = read()
+		ManualCoordinates[2] = tonumber(read())
 		print("Entrez coordonnée z cible. - INACTIF EN v2.0")
-		ManualCoordinates[3] = read()
+		ManualCoordinates[3] = tonumber(read())
 		
 		GetGPSCurrentLoc()
 		while not TurtleGPSPos[2] == ManualCoordinates[2] do
@@ -507,6 +508,8 @@ function InventoryCheck()
 end
 
 --Programme
+
+print("Version programme : "..ProgramVersion)
 
 TurtleBooting()
 
