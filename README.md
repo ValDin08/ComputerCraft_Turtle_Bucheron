@@ -9,6 +9,9 @@ Installation du programme :
   - Autre solution : copiez le code contenu dans *bucheron.lua* dans votre *startup.lua*.
   - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
 
+## Exemple de structure d'une ferme à bois : 
+<img width="909" height="536" alt="image" src="https://github.com/user-attachments/assets/f4812cc0-8590-4142-bb63-0441faa0f370" />
+
 ---
 
 # Programme : Turtle Bucheron
