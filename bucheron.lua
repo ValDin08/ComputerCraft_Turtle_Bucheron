@@ -1,16 +1,18 @@
 --Déclaration des variables
 	--Globales
-		local WorkingMode		=	""
-		local ProgramVersion	=	"3.0"
+		local WorkingMode		=	""		--Mode de fonctionnement de la turtle
+		local ProgramVersion	=	"3.1"	--Version actuelle du programme
+		local TreeHarvested 	=	0		--Nombre d'arbres récoltés sur la run en cours
 		
 	--Réseau
-		local LocalID			=	16
-		local ServerID			=	11
-		local ModemSide			=	"right"
-		local ServerConnected	=	false
-		local ServerRequest		=	false
-		local TurtleRequest		=	false
-		local ServerAuthorized	=	false
+		local LocalID			=	16		--ID de la turtle
+		local ServerID			=	11		--ID du serveur
+		local ModemSide			=	"right"	--Côté du modem sur la turtle
+		local ServerConnected	=	false	--Serveur ateignable et connecté à la turtle
+		local ServerRequest		=	false	--Requête du serveur reçue par la turtle
+		local TurtleRequest		=	false	--Requête de la turtle à envoyer au serveur
+		local ServerAuthorized	=	false	--Serveur connecté à la turtle et autorisant le travail
+		local ID, Message					--Message reçu depuis RedNET
 		
 	--Inventaire
 		--Inventaire flottant (S = Start / E = End)
@@ -440,6 +442,8 @@ function CutDown()
 	MoveBackward()
 	--Appel de la fonction de replantage
 	Replant()
+	
+	TreeHarvested = TreeHarvested + 1
 end
 
 function Replant()
@@ -516,7 +520,7 @@ end
 --FONCTIONS RESEAU
 function GetServerConnexion()
 	--Tentative de connexion au serveur local
-	rednet.send(ServerID, "Access request")
+	rednet.send(ServerID, {RequestID = 1})
 	--Attente d'une réponse du serveur pendant 5 secondes
 	ID, Message = rednet.receive(5)
 	if not ID or ID ~= ServerID then
@@ -526,7 +530,7 @@ function GetServerConnexion()
 		print("Connexion au serveur impossible.")
 	else
 	--Connecté au serveur avec succès
-		if Message == "Access granted" then 
+		if Message.AnswerID == 101 then 
 			ServerConnected = true
 			print("Serveur connecté avec succès.")
 		else
@@ -549,6 +553,7 @@ function LumberJacking()
 		else
 			ExitWorkZone()
 		end
+		CraftNET()
 	end
 	
 	while not ServerConnected do
@@ -563,22 +568,17 @@ function LumberJacking()
 end
 
 --Gestion réseau et trames
-function CraftNET()
-	local ID, Message	=	0, ""
-	
-	--Ouverture de la connexion au réseau RedNET
-	rednet.open(ModemSide)
-	
+function CraftNET()		
 	--Demande d'autorisation de fonctionner
 	if ServerConnected then
-		rednet.send(ServerID, "Work authorization request")
+		rednet.send(ServerID, {RequestID = 2})
 		ID, Message = rednet.receive(5)
 		if not ID or ID ~= ServerID then
 		--Connexion au serveur impossible
 			GetServerConnexion()
 		else
 		--Connecté au serveur avec succès
-			if Message == "Work authorized" then 
+			if Message.AnswerID == 102 then 
 				ServerAuthorized = true
 				print("Autorisation de démarrage accordée")
 			else
@@ -587,38 +587,20 @@ function CraftNET()
 		end
 	end
 	
-	-- while ServerConnected do
-		-- Attente d'une demande d'informations du serveur
-		-- ID, Message = rednet.receive(60)
-		-- if ID == ServerID then
-			-- Demande de la position actuelle de la turtle
-			-- if Message == "Send position" then
-				-- rednet.send(ServerID, "Turtle location = "..TurtleGPSPos..".")
-			-- Demande du nombre de rangées récoltées
-			-- elseif Message == "Send ranges done" then
-				-- rednet.send(ServerID, "Ranges done = "..RangesDone..".")
-			-- Demande des quantités contenues dans l'inventaire
-			-- elseif Message == "Send inventory" then
-				-- for i = 1, 16 do
-					-- local SlotItem = turtle.getItemDetail(i)
-					-- rednet.send(ServerID, "Quantity in slot "..i.." : "..SlotItem.count.." of "..SlotItem.name..".")
-					-- ID, Message = rednet.receive(10)
-					-- if not ID then break end
-				-- end
-			-- else
-				-- rednet.send(11,"Message incorrect")
-			-- end
-		-- elseif not ID then
-			-- GetServerConnexion()
-		-- end
-	-- end
+	if ServerConnected and ServerAuthorized then
+		--Envoi au serveur de la trame de position actuelle de la turtle
+		rednet.send(ServerID, {RequestID = 10, CurrentTurtlePosition = TurtleGPSPos , TurtleOrientation = TurtleFacing , TreeHarvestedCurrentRun = TreeHarvested})
+	end
 end
 
---Programme
-
+--PROGRAMME
 print("Version programme : "..ProgramVersion)
+--Ouverture de la connexion au réseau RedNET
+rednet.open(ModemSide)
 
-GetServerConnexion()
+while not ServerConnected do
+	GetServerConnexion()
+end
 	
 if ServerConnected then
 	TurtleBooting()
