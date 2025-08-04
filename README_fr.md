@@ -12,7 +12,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 2.2
+## Version : 2.3
 
 ### Patchnote : 
 
@@ -35,8 +35,10 @@ Ajout du mode de marche manu/auto - `Manuel pas encore opérationnel.`*
 
 *2.1 : Gestion de l'inventaire fluidifiée.*
 
-**2.2 : Casse non prise en compte dans les entrées de strings.  
-Affichage de la version du programme au démarrage de la turtle.**
+*2.2 : Casse non prise en compte dans les entrées de strings.  
+Affichage de la version du programme au démarrage de la turtle.*
+
+**2.3 : Correction du bug de redescente après la coupe d'un arbre.**
 
 ---
 > [!NOTE]
