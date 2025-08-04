@@ -1,7 +1,17 @@
 --Déclaration des variables
 	--Globales
-		local WorkingMode		= ""
-		local ProgramVersion	=	"2.3"
+		local WorkingMode		=	""
+		local ProgramVersion	=	"3.0"
+		
+	--Réseau
+		local LocalID			=	16
+		local ServerID			=	11
+		local ModemSide			=	"right"
+		local ServerConnected	=	false
+		local ServerRequest		=	false
+		local TurtleRequest		=	false
+		local ServerAuthorized	=	false
+		
 	--Inventaire
 		--Inventaire flottant (S = Start / E = End)
 			local SSapplings	=	1	--Début du stock de pousses d'arbre
@@ -360,26 +370,18 @@ function CheckWorkZoneLimits()
 	--Réacquisition de la position GPS
 	GetGPSCurrentLoc()
 	--Vérification de la zone de travail
-	if TurtleFacing == 1 then
-		if TurtleGPSPos[3] > zLine[2] then
-			MoveBackward()
-			TurnLeft()
-		end
-	elseif TurtleFacing == 2 then
-		if TurtleGPSPos[3] < zLine[1] then
-			MoveBackward()
-			TurnLeft()
-		end
-	elseif TurtleFacing == 3 then
-		if TurtleGPSPos[1] < xLine[1] then
-			MoveBackward()
-			TurnLeft()
-		end	
-	else
-		if TurtleGPSPos[1] > xLine[2] then
-			MoveBackward()
-			TurnLeft()
-		end	
+	if TurtleGPSPos[3] > zLine[2] then
+		MoveBackward()
+		TurnLeft()
+	elseif TurtleGPSPos[3] < zLine[1] then
+		MoveBackward()
+		TurnLeft()
+	elseif TurtleGPSPos[1] < xLine[1] then
+		MoveBackward()
+		TurnLeft()
+	elseif TurtleGPSPos[1] > xLine[2] then
+		MoveBackward()
+		TurnLeft()
 	end
 end
 
@@ -412,7 +414,7 @@ function Movement()
 		if TypeOfMvmt == 1 then MoveForward(1)
 		elseif TypeOfMvmt == 2 then DodgeSappling()
 		end
-	end	
+	end
 	CheckWorkZoneLimits()
 end
 
@@ -511,20 +513,117 @@ function InventoryCheck()
 	end
 end
 
+--FONCTIONS RESEAU
+function GetServerConnexion()
+	--Tentative de connexion au serveur local
+	rednet.send(ServerID, "Access request")
+	--Attente d'une réponse du serveur pendant 5 secondes
+	ID, Message = rednet.receive(5)
+	if not ID or ID ~= ServerID then
+	--Connexion au serveur impossible
+		ServerConnected = false
+		ServerAuthorized = false
+		print("Connexion au serveur impossible.")
+	else
+	--Connecté au serveur avec succès
+		if Message == "Access granted" then 
+			ServerConnected = true
+			print("Serveur connecté avec succès.")
+		else
+			ServerConnected = false
+		end
+	end
+end
+
+--Fonctions parallèles
+--Programme de bucheronage
+function LumberJacking()
+	CraftNET()
+	while ServerAuthorized do
+		if (turtle.getFuelLevel() < 100) then
+			Refuel()
+		end
+		InventoryCheck()
+		if InventoryNeeds == 0 then
+			Movement()
+		else
+			ExitWorkZone()
+		end
+	end
+	
+	while not ServerConnected do
+		print("Connexion au serveur perdue, tentative de reconnexion...")
+		GetServerConnexion()
+		if not ServerConnected then
+			os.sleep(10)
+		else
+			print("Connexion rétablie, reprise du travail.")
+		end
+	end
+end
+
+--Gestion réseau et trames
+function CraftNET()
+	local ID, Message	=	0, ""
+	
+	--Ouverture de la connexion au réseau RedNET
+	rednet.open(ModemSide)
+	
+	--Demande d'autorisation de fonctionner
+	if ServerConnected then
+		rednet.send(ServerID, "Work authorization request")
+		ID, Message = rednet.receive(5)
+		if not ID or ID ~= ServerID then
+		--Connexion au serveur impossible
+			GetServerConnexion()
+		else
+		--Connecté au serveur avec succès
+			if Message == "Work authorized" then 
+				ServerAuthorized = true
+				print("Autorisation de démarrage accordée")
+			else
+				ServerAuthorized = false
+			end
+		end
+	end
+	
+	-- while ServerConnected do
+		-- Attente d'une demande d'informations du serveur
+		-- ID, Message = rednet.receive(60)
+		-- if ID == ServerID then
+			-- Demande de la position actuelle de la turtle
+			-- if Message == "Send position" then
+				-- rednet.send(ServerID, "Turtle location = "..TurtleGPSPos..".")
+			-- Demande du nombre de rangées récoltées
+			-- elseif Message == "Send ranges done" then
+				-- rednet.send(ServerID, "Ranges done = "..RangesDone..".")
+			-- Demande des quantités contenues dans l'inventaire
+			-- elseif Message == "Send inventory" then
+				-- for i = 1, 16 do
+					-- local SlotItem = turtle.getItemDetail(i)
+					-- rednet.send(ServerID, "Quantity in slot "..i.." : "..SlotItem.count.." of "..SlotItem.name..".")
+					-- ID, Message = rednet.receive(10)
+					-- if not ID then break end
+				-- end
+			-- else
+				-- rednet.send(11,"Message incorrect")
+			-- end
+		-- elseif not ID then
+			-- GetServerConnexion()
+		-- end
+	-- end
+end
+
 --Programme
 
 print("Version programme : "..ProgramVersion)
 
-TurtleBooting()
+GetServerConnexion()
+	
+if ServerConnected then
+	TurtleBooting()
+end
 
 while true do
-	if (turtle.getFuelLevel() < 100) then
-		Refuel()
-	end
-	InventoryCheck()
-	if InventoryNeeds == 0 then
-		Movement()
-	else
-		ExitWorkZone()
-	end
+	LumberJacking()
 end
