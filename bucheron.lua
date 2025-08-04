@@ -1,7 +1,7 @@
 --Déclaration des variables
 	--Globales
 		local WorkingMode		=	""		--Mode de fonctionnement de la turtle
-		local ProgramVersion	=	"3.1"	--Version actuelle du programme
+		local ProgramVersion	=	"3.2"	--Version actuelle du programme
 		local TreeHarvested 	=	0		--Nombre d'arbres récoltés sur la run en cours
 		
 	--Réseau
@@ -13,6 +13,7 @@
 		local TurtleRequest		=	false	--Requête de la turtle à envoyer au serveur
 		local ServerAuthorized	=	false	--Serveur connecté à la turtle et autorisant le travail
 		local ID, Message					--Message reçu depuis RedNET
+		local CurrentFuelLevel	=	0		--Niveau de carburant actuel
 		
 	--Inventaire
 		--Inventaire flottant (S = Start / E = End)
@@ -107,16 +108,11 @@ function MoveBackward()
 	GetGPSCurrentLoc()
 end
 
-function DodgeSappling()
-	turtle.digUp()
-	MoveUp()
-	turtle.dig()
-	MoveForward(1)
-	turtle.dig()
-	MoveForward(1)
-	MoveDown()
-	--Remise à 0 de la commande de mouvement
-	TypeOfMvmt = 0
+function FuelManagement()
+	CurrentFuelLevel = turtle.getFuelLevel()
+	if CurrentFuelLevel < 100 then
+		Refuel()
+	end
 end
 
 --ACQUISITION DE LA POSITION GPS ACTUELLE
@@ -186,7 +182,11 @@ function GetStartLocation()
 		print("Entrez point de départ z.")
 		TurtleStartPos[3] = tonumber(read())
 		print("Entrez orientation de départ : 1 = Nord, 2 = Sud, 3 = Est, 4 = Ouest.")
-		TurtleFacing = tonumber(read())
+		TurtleFacing = tonumber(read())	
+	else
+		print("Commande inconnue.")
+		os.sleep(2)
+		os.reboot()
 	end
 	print("Calibrage position terminée.")
 	GetGPSCurrentLoc()
@@ -198,10 +198,9 @@ function GetInWorkPosition()
 	if WorkingMode == "auto" then
 		--Comparaison de l'altitude
 		GetGPSCurrentLoc()
-		if TurtleGPSPos[2] == TurtleStartPos[2] then
+		while TurtleGPSPos[2] < TurtleStartPos[2] + 2 do
 			--Décollage de la turtle
 			MoveUp()
-			GetGPSCurrentLoc()
 		end
 
 		--Vérification du sens de démarrage de la turtle et déplacement pour rentrer au point le plus proche dans la zone de travail
@@ -229,11 +228,11 @@ function GetInWorkPosition()
 		
 	elseif WorkingMode == "manu" then
 		local ManualCoordinates = {0, 0, 0}
-		print("Entrez coordonnée x cible. - INACTIF EN v2.0")
+		print("Entrez coordonnée x cible. - INACTIF EN v3.x")
 		ManualCoordinates[1] = tonumber(read())
 		print("Entrez coordonnée y cible.")
 		ManualCoordinates[2] = tonumber(read())
-		print("Entrez coordonnée z cible. - INACTIF EN v2.0")
+		print("Entrez coordonnée z cible. - INACTIF EN v3.x")
 		ManualCoordinates[3] = tonumber(read())
 		
 		GetGPSCurrentLoc()
@@ -241,7 +240,7 @@ function GetInWorkPosition()
 			if TurtleGPSPos < ManualCoordinates[2] then MoveUp() else MoveDown() end
 		end
 		
-		print("Placement manuel autre que 'y' inactif en v2.0, patientez...")
+		print("Placement manuel autre que 'y' inactif en v3.x, patientez...")
 		os.sleep(2)
 		
 	elseif WorkingMode == "hold" then 
@@ -254,12 +253,6 @@ end
 function ExitWorkZone()
 	--Acquisition position GPS
 	GetGPSCurrentLoc()
-	--Analyse de l'altitude
-	if TurtleGPSPos[2] > (TurtleStartPos[2]+1) then
-		while not TurtleGPSPos == (TurtleStartPos[2]+1) do MoveDown() end
-	elseif TurtleGPSPos[2] < (TurtleStartPos[2]+1) then
-		while not TurtleGPSPos == (TurtleStartPos[2]+1) do MoveUp() end
-	end
 	
 	--Vérification de l'orientation pour définir la rotation de sortie
 	if TurtleFacing == 2 then 
@@ -288,13 +281,13 @@ function ExitWorkZone()
 		TurnRight()
 		MoveForward(math.abs(TurtleGPSPos[1]-TurtleExitPos[1]))
 		TurnLeft()
-		MoveDown()
 	elseif TurtleGPSPos[1] > TurtleExitPos[1] then
 		TurnLeft()
 		MoveForward(math.abs(TurtleGPSPos[1]-TurtleExitPos[1]))
 		TurnRight()
-		MoveDown()
 	end
+	
+	while TurtleGPSPos[2] > TurtleStartPos[2] do MoveDown() end
 	
 	--Si la turtle est au point de sortie, alors sortie autorisée
 	GetGPSCurrentLoc()
@@ -350,14 +343,7 @@ end
 --ANALYSE DE L'ENVIRONNEMENT
 function CheckFrontBlock()
 	--Vérification s'il y a présence d'un bloc devant la turtle
-	if turtle.detect() then
-		--Vérification si le bloc est une pousse ou un arbre
-		turtle.select(SSapplings)
-		if turtle.compare() then TypeOfMvmt = 2
-		else CutDown()
-		end
-	else TypeOfMvmt = 1
-	end
+	if turtle.detect() then CutDown() else TypeOfMvmt = 1 end
 	--Réacquisition de la position GPS
 	GetGPSCurrentLoc()	
 end
@@ -413,9 +399,7 @@ function Movement()
 		RangesDone = 0
 	else
 		CheckFrontBlock()
-		if TypeOfMvmt == 1 then MoveForward(1)
-		elseif TypeOfMvmt == 2 then DodgeSappling()
-		end
+		if TypeOfMvmt == 1 then MoveForward(1) end
 	end
 	CheckWorkZoneLimits()
 end
@@ -439,7 +423,7 @@ function CutDown()
 		MoveDown()
 	end
 	
-	MoveBackward()
+	MoveUp()
 	--Appel de la fonction de replantage
 	Replant()
 	
@@ -449,20 +433,12 @@ end
 function Replant()
 	--Replantage de la pousse
 	turtle.select(SSapplings)
-	turtle.place()
+	turtle.placeDown()
 	if turtle.getItemCount(ESapplings) > 0 then
 		TransferIntraInventory(ESapplings, SSapplings, 1)
 	elseif turtle.getItemCount(ESapplings) == 0 and turtle.getItemCount(ESapplings - 1) > 0 then
 		TransferIntraInventory(ESapplings - 1, SSapplings, 1)
 	end
-	--Evitement de la pousse plantée
-	turtle.digUp()
-	MoveUp()
-	turtle.dig()
-	MoveForward(1)
-	turtle.dig()
-	MoveForward(1)
-	MoveDown()
 end
 
 --RAVITAILLEMENT CARBURANT
@@ -531,8 +507,8 @@ function GetServerConnexion()
 	else
 	--Connecté au serveur avec succès
 		if Message.AnswerID == 101 then 
-			ServerConnected = true
-			print("Serveur connecté avec succès.")
+			if not ServerConnected then print("Serveur connecté avec succès.") end
+			ServerConnected = true			
 		else
 			ServerConnected = false
 		end
@@ -544,9 +520,7 @@ end
 function LumberJacking()
 	CraftNET()
 	while ServerAuthorized do
-		if (turtle.getFuelLevel() < 100) then
-			Refuel()
-		end
+		FuelManagement()
 		InventoryCheck()
 		if InventoryNeeds == 0 then
 			Movement()
@@ -571,6 +545,7 @@ end
 function CraftNET()		
 	--Demande d'autorisation de fonctionner
 	if ServerConnected then
+		os.sleep(0,5)
 		rednet.send(ServerID, {RequestID = 2})
 		ID, Message = rednet.receive(5)
 		if not ID or ID ~= ServerID then
@@ -579,18 +554,18 @@ function CraftNET()
 		else
 		--Connecté au serveur avec succès
 			if Message.AnswerID == 102 then 
+				if not ServerAuthorized then print("Autorisation de démarrage accordée") end
 				ServerAuthorized = true
-				print("Autorisation de démarrage accordée")
 			else
 				ServerAuthorized = false
 			end
 		end
 	end
 	
-	if ServerConnected and ServerAuthorized then
-		--Envoi au serveur de la trame de position actuelle de la turtle
-		rednet.send(ServerID, {RequestID = 10, CurrentTurtlePosition = TurtleGPSPos , TurtleOrientation = TurtleFacing , TreeHarvestedCurrentRun = TreeHarvested})
-	end
+	os.sleep(0,5)
+	--Envoi au serveur de la trame de position actuelle de la turtle
+	rednet.send(ServerID, {RequestID = 110, CurrentTurtlePosition = TurtleGPSPos , TurtleOrientation = TurtleFacing , TreeHarvestedCurrentRun = TreeHarvested , FuelLevel = CurrentFuelLevel})
+
 end
 
 --PROGRAMME
