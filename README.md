@@ -12,7 +12,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 3.1
+## Version : 3.2
 
 ### Patchnote : 
 
@@ -42,7 +42,9 @@ Affichage de la version du programme au démarrage de la turtle.*
 
 *3.0 : Intégration de la communication réseau avec le serveur.*
 
-**3.1 : Envoi de la position, de l'orientation de la turtle et du nombre d'arbres coupés sur la run en cours au serveur à chaque cycle de communication sur le protocol CraftNET.**
+*3.1 : Envoi de la position, de l'orientation de la turtle et du nombre d'arbres coupés sur la run en cours au serveur à chaque cycle de communication sur le protocol CraftNET.*
+
+**3.2 : Amélioration de l'efficience énergétique.**
 
 ---
 > [!NOTE]
