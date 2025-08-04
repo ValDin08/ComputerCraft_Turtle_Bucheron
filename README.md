@@ -49,7 +49,7 @@ Affichage de la version du programme au démarrage de la turtle.*
 
 *3.2 : Amélioration de l'efficience énergétique.*
 
-**3.2 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
+**3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
 Modification de la trame d'informations envoyée au serveur.**
 
 ---
