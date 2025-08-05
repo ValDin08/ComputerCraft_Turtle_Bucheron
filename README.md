@@ -1,4 +1,7 @@
-# ComputerCraft_Turtle_Bucheron
+
+<img width="1024" height="1024" alt="turtle bucheron" src="https://github.com/user-attachments/assets/e3e77245-d02c-4ddd-a18c-4ac768063ea6" />
+
+# ComputerCraft Turtle Bucheron
 Programme ComputerCraft pour Turtle bucheron
 
 Installation du programme : 
