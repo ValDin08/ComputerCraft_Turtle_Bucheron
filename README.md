@@ -19,7 +19,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 3.3
+## Version : 4.0-alpha
 
 ### Patchnote : 
 
@@ -53,8 +53,12 @@ Affichage de la version du programme au démarrage de la turtle.*
 
 *3.2 : Amélioration de l'efficience énergétique.*
 
-**3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
-Modification de la trame d'informations envoyée au serveur.**
+*3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
+Modification de la trame d'informations envoyée au serveur.*
+
+**4.0a : Intégration de PixelLink.  
+Modifications du programme en conséquence.  
+Optimisation de certaines fonctions.**
 
 ---
 > [!NOTE]
@@ -67,18 +71,18 @@ Modification de la trame d'informations envoyée au serveur.**
 > Le schéma de construction du satellite et ses programmes GPS sont disponibles sur GitHub.
 
 > [!IMPORTANT]
-> Dépendante du système Serveur et au réseau CraftNET. Un Serveur doit être programmé pour communiquer avec la Turtle.
+> Dépendante du système Serveur et au réseau PixelLink. Un Serveur doit être programmé pour communiquer avec la Turtle.
 
 > [!TIP]
-> Le programme du serveur bucheron 1.0 est disponible sur GitHub.
+> Le programme du serveur bucheron 4.0 est en cours de développement.
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
-> <img width="1277" height="347" alt="image" src="https://github.com/user-attachments/assets/bfb4dfd4-5171-4da2-b876-b24ad4e813f6" />
+> <img width="1058" height="266" alt="image" src="https://github.com/user-attachments/assets/c347f9cc-f568-458e-9531-04d78b2c9d72" />
 
 
 > [!WARNING]
-> Pour le bon fonctionnement de votre Turtle, il faut adapter l'ID du serveur et le côté où se situe votre Modem :
+> Pour le bon fonctionnement de votre Turtle, il faut adapter l'ID de son serveur et le côté où se situe votre Modem :
 > <img width="582" height="156" alt="image" src="https://github.com/user-attachments/assets/5cf5128d-7e1a-4f72-abd1-430c1a21915d" />
 
 
