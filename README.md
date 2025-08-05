@@ -83,6 +83,4 @@ Optimisation de certaines fonctions.**
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter l'ID de son serveur et le côté où se situe votre Modem :
-> <img width="582" height="156" alt="image" src="https://github.com/user-attachments/assets/5cf5128d-7e1a-4f72-abd1-430c1a21915d" />
-
-
+> <img width="975" height="197" alt="image" src="https://github.com/user-attachments/assets/2d498080-7cc8-4620-a778-d4abf6739d72" />
