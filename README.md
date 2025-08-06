@@ -19,7 +19,7 @@ Installation du programme :
 ---
 
 # Programme : Turtle Bucheron
-## Version : 3.3
+## Version : 4.0-alpha02
 
 ### Patchnote : 
 
@@ -53,8 +53,11 @@ Affichage de la version du programme au démarrage de la turtle.*
 
 *3.2 : Amélioration de l'efficience énergétique.*
 
-**3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
-Modification de la trame d'informations envoyée au serveur.**
+*3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
+Modification de la trame d'informations envoyée au serveur.*
+
+**4.0-alpha02 : Intégration de PixelLink.
+Modification du programme en conséquence.**
 
 ---
 > [!NOTE]
@@ -64,21 +67,21 @@ Modification de la trame d'informations envoyée au serveur.**
 > Dépendante du système GPS. Un GPS doit être ajouté à la Turtle et un satellite doit être mis en place afin de localiser la Turtle.
 
 > [!TIP]
-> Le schéma de construction du satellite et ses programmes GPS sont disponibles sur GitHub.
+> Le schéma de construction du satellite et ses programmes GPS sont [disponibles sur GitHub](https://github.com/ValDin08/ComputerCraft_Satellite_GPS).
 
 > [!IMPORTANT]
-> Dépendante du système Serveur et au réseau CraftNET. Un Serveur doit être programmé pour communiquer avec la Turtle.
+> Dépendante du système Serveur et au réseau PixelLink.
+> Un Serveur doit être programmé pour communiquer avec la Turtle.
+> Le module PixelLink, [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), doit être installé sur la Turtle.
 
 > [!TIP]
-> Le programme du serveur bucheron 1.0 est disponible sur GitHub.
+> Le programme du serveur bucheron 4.0-alpha02 est [disponible en pre-release sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
-> <img width="1277" height="347" alt="image" src="https://github.com/user-attachments/assets/bfb4dfd4-5171-4da2-b876-b24ad4e813f6" />
+> <img width="1407" height="380" alt="image" src="https://github.com/user-attachments/assets/be7f7b5d-6331-40ab-8610-66999624b9bd" />
 
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter l'ID du serveur et le côté où se situe votre Modem :
-> <img width="582" height="156" alt="image" src="https://github.com/user-attachments/assets/5cf5128d-7e1a-4f72-abd1-430c1a21915d" />
-
-
+> <img width="1001" height="182" alt="image" src="https://github.com/user-attachments/assets/c485b2db-7ea6-4c09-a44b-e4e84dbb856f" />
