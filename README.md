@@ -23,6 +23,10 @@ Installation du programme :
 
 ### Patchnote : 
 
+<details>
+  
+<summary>Voir l'historique des versions précédentes</summary>
+
 *1.0 : Version de base de la turtle bucheron  
 Rechargement et Déchargement manuel de la turtle  
 Refueling uniquement au reboot de la turtle  
@@ -55,6 +59,8 @@ Affichage de la version du programme au démarrage de la turtle.*
 
 *3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
 Modification de la trame d'informations envoyée au serveur.*
+
+</details>
 
 **4.0-alpha02 : Intégration de PixelLink.
 Modification du programme en conséquence.**
