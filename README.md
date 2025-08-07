@@ -79,6 +79,7 @@ Modification du programme en conséquence.*
 - [ ] Bug détecté en v4.0-alpha03 : la Turtle quitte sa zone de travail, mais s'arrête immédiatement après avoir perdu la connexion au serveur. Sa position est affichée sur l'IHM. --> Une seule occurence, à surveiller...
 - [ ] Essais à faire sur une autre ferme (nouvelle configuration, orientation...)
 - [ ] Voir pour que la Turtle sache d'elle même dans quel sens tourner au premier virage pour le démarrage du snake. Les virages suivants seront ensuite fait en alternance gauche/droite en fonction du premier virage.
+- [ ] Ajouter une mise en position de départ (écrite en dur) si démarrage en dehors de son point de départ.
 
 ---
 > [!NOTE]
