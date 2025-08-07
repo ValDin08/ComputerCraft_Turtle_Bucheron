@@ -1,28 +1,28 @@
 -- DECLARATION DES VARIABLES
 	-- Globales
-		local ProgramVersion	=	"4.0a02"	-- Version actuelle du programme
+		local ProgramVersion	=	"4.0a03"	-- Version actuelle du programme
 		local TurtleFunction	=	"bucheron"	-- Fonction de la turtle
 		local TreesHarvested 	=	0			-- Nombre d'arbres récoltés sur la run en cours
-		local ErrorDetected	=	false		-- Erreur détectée
-		local Error		=	""			-- Erreur remontée par la Turtle
-		local InCycle		=	false		-- Turtle en production
+		local ErrorDetected		=	false		-- Erreur détectée
+		local Error				=	""			-- Erreur remontée par la Turtle
+		local InCycle			=	false		-- Turtle en production
 		
 	-- Réseau
-		local LocalID		=	os.getComputerID()	-- ID de la turtle
-		local ServerID		=	11					-- ID du serveur
-		local ModemSide		=	"right"				-- Côté du modem sur la turtle
+		local LocalID			=	os.getComputerID()	-- ID de la turtle
+		local ServerID			=	11					-- ID du serveur
+		local ModemSide			=	"right"				-- Côté du modem sur la turtle
 		local ServerConnected	=	false				-- Serveur ateignable et connecté à la turtle
 		local ServerAuthorized	=	false				-- Serveur connecté à la turtle et autorisant le travail
 		local CurrentFuelLevel	=	0					-- Niveau de carburant actuel
-		local PixelLink 	=	require("PixelLink")
+		local PixelLink 		=	require("PixelLink")
 		
 		
 	-- Inventaire
 		-- Inventaire flottant (S = Start / E = End)
 			local SSapplings	=	1	-- Début du stock de pousses d'arbre
 			local ESapplings	=	3	-- Fin du stock de pousses d'arbre
-			local SFuel		=	5	-- Début du réservoir à carburant
-			local EFuel		=	6	-- Fin du réservoir à carburant
+			local SFuel			=	5	-- Début du réservoir à carburant
+			local EFuel			=	6	-- Fin du réservoir à carburant
 			local SWoodStock	=	8	-- Début du stock de buches
 			local EWoodStock	=	16	-- Fin du stock de buches
 		-- Inventaire fixe
@@ -32,17 +32,17 @@
 			local FuelQty 		= 	0
 			local LogQty 		=	0
 			
-		local InventoryNOK	=	0	-- Inventaire pas prêt pour démarrage de la turtle
+		local InventoryNOK		=	0	-- Inventaire pas prêt pour démarrage de la turtle
 		local InventoryNeeds	=	0	-- Type de besoin de l'inventaire lors de la prochaine sortie (3 bits -- > 1 = Pousses à recharger / 10 = Carburant à recharger / 100 = Buches à déposer)
 			
 	-- Mouvements
-		local RangesQty		=	3	-- Nombre de rangées gérées par la turtle
-		local RangesDone	=	0	-- Nombre de rangées où la turtle est passée
-		local TypeOfMvmt	=	0	-- Type de mouvement (0 = Stop / 1 = Avance normale / 2 = Evitement pousse / 3 = Virage gauche / 4 = Virage droit / 5 = guidage GPS)
+		local RangesQty			=	3	-- Nombre de rangées gérées par la turtle
+		local RangesDone		=	0	-- Nombre de rangées où la turtle est passée
+		local TypeOfMvmt		=	0	-- Type de mouvement (0 = Stop / 1 = Avance normale / 2 = Evitement pousse / 3 = Virage gauche / 4 = Virage droit / 5 = guidage GPS)
 		
 		-- Coordonnées
 			local TurtleGPSPos	=	{0, 0, 0}		-- Position GPS actuelle de la turle
-			local TurtleStartPos	=	{-81, 64, 48}	-- Position GPS de démarrage de la turtle
+			local TurtleStartPos=	{-81, 64, 48}	-- Position GPS de démarrage de la turtle
 			local TurtleExitPos	=	{0, 0, 0}		-- Position GPS d'entrée/sortie de la zone de travail
 			local TurtleFacing	=	0				-- Orientation de la turtle (1 = Nord / 2 = Sud / 3 = Est / 4 = Ouest)
 			local FuelChest		=	{-79, 64, 47}	-- Position du coffre de carburant
@@ -50,8 +50,8 @@
 			local SapsChest		=	{-83, 64, 48}	-- Position du coffre des pousses d'arbre
 			local xLimitLine	=	{-88, -70, 0}	-- Zone de travail x (min, max, pas utilisé)
 			local zLimitLine	=	{53 ,63 , 0}	-- Zone de travail z (min, max, pas utilisé)
-			local xTreeLine		=	{0, 0, 0}		-- Zone de bucheronnage x (min, max, pas utilisé)
-			local zTreeLine		=	{0, 0, 0}		-- Zone de bucheronnage z (min, max, pas utilisé)
+			local xTreeLine		=	{-85, -73, 0}   -- Zone de bucheronnage x (min, max, pas utilisé)
+			local zTreeLine		=	{56, 60, 0}		-- Zone de bucheronnage z (min, max, pas utilisé)
 
 -- CREATION DES FONCTIONS
 	-- FONCTIONS DEPLACEMENTS DE BASE
@@ -363,16 +363,16 @@
 			GetGPSCurrentLoc()
 			-- Vérification de la zone de travail
 			if TurtleGPSPos[3] > zLimitLine[2] then
-				MoveBackward()
+				MoveBackward(1)
 				TurnLeft()
 			elseif TurtleGPSPos[3] < zLimitLine[1] then
-				MoveBackward()
+				MoveBackward(1)
 				TurnLeft()
 			elseif TurtleGPSPos[1] < xLimitLine[1] then
-				MoveBackward()
+				MoveBackward(1)
 				TurnLeft()
 			elseif TurtleGPSPos[1] > xLimitLine[2] then
-				MoveBackward()
+				MoveBackward(1)
 				TurnLeft()
 			end
 		end
@@ -382,24 +382,24 @@
 			GetGPSCurrentLoc()
 			-- Vérification zone de pousse des arbres
 			if TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone < RangesQty then
-				TurnLeft()
+				TurnRight()
 				MoveForward(2)
-				TurnLeft()
+				TurnRight()
 				MoveForward(1)
 				RangesDone = RangesDone + 1
 			elseif TurtleGPSPos[1] < (xTreeLine[1]-1) and RangesDone < RangesQty then
-				TurnRight()
+				TurnLeft()
 				MoveForward(2)
-				TurnRight()
+				TurnLeft()
 				MoveForward(1)
 				RangesDone = RangesDone + 1
 			elseif RangesDone == RangesQty then
 				GetGPSCurrentLoc()
 				MoveForward(math.abs(TurtleGPSPos[1]-xTreeLine[1]))
 				MoveForward(1)
-				TurnLeft()	
+				TurnRight()	
 				MoveForward(math.abs(TurtleGPSPos[3]-zTreeLine[1]))
-				TurnLeft()
+				TurnRight()
 				RangesDone = 0
 			else
 				CheckFrontBlock()
@@ -592,7 +592,7 @@
 -- PROGRAMME
 	print("Version programme : "..ProgramVersion)
 	-- Ouverture de la connexion au réseau RedNET
-	if pixellink then
+	if PixelLink then
 		rednet.open(ModemSide)
 
 		while true do
