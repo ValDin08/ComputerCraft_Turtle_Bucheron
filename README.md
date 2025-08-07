@@ -14,12 +14,15 @@ Installation du programme :
   - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
 
 ## Exemple de structure d'une ferme à bois : 
+<p align="center">
 <img width="909" height="536" alt="image" src="https://github.com/user-attachments/assets/f4812cc0-8590-4142-bb63-0441faa0f370" />
+<img width="3840" height="2019" alt="2025-08-07_19 03 32" src="https://github.com/user-attachments/assets/b49c0819-012c-4e04-9d40-213d8377357a" />
+</p>
 
 ---
 
 # Programme : Turtle Bucheron
-## Version : 4.0-alpha02
+## Version : 4.0-alpha03
 
 ### Patchnote : 
 
@@ -60,10 +63,12 @@ Affichage de la version du programme au démarrage de la turtle.*
 *3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
 Modification de la trame d'informations envoyée au serveur.*
 
+*4.0-alpha02 : Intégration de PixelLink.
+Modification du programme en conséquence.*
+
 </details>
 
-**4.0-alpha02 : Intégration de PixelLink.
-Modification du programme en conséquence.**
+**4.0-alpha03 : Corrections programme pendant tests**
 
 ---
 > [!NOTE]
