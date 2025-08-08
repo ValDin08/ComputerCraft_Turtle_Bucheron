@@ -69,14 +69,14 @@ Display of program version at turtle startup.*
 *3.3: Added stop function for the turtle from the server.  
 Changed the information frame sent to the server.*
 
-*4.0-alpha02: PixelLink integration.
+*4.0-alpha02: PixelLink integration.  
 Program modified accordingly.*
 
-*4.0-alpha03: Program corrections during tests*
+*4.0-alpha03: Program corrections during tests.*
 
 </details>
 
-**4.0-alpha04: Program corrections during tests**
+**4.0-alpha04: Program corrections during tests.**
 
 ### Roadmap:
 
