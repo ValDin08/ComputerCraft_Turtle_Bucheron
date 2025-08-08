@@ -28,7 +28,7 @@ shell.run(METIER)*
 ---
 
 # Program: Turtle Bucheron
-## Version: 4.0-alpha03
+## Version: 4.0-alpha04
 
 ### Patchnote:
 
@@ -72,9 +72,11 @@ Changed the information frame sent to the server.*
 *4.0-alpha02: PixelLink integration.
 Program modified accordingly.*
 
+*4.0-alpha03: Program corrections during tests*
+
 </details>
 
-**4.0-alpha03: Program corrections during tests**
+**4.0-alpha04: Program corrections during tests**
 
 ### Roadmap:
 
@@ -89,10 +91,10 @@ Program modified accordingly.*
 
 ---
 > [!NOTE]
-> Exiting the logging area for inventory emptying and refilling.
+> Automaticaly exiting the logging area for inventory emptying and refilling.
 
 > [!IMPORTANT]
-> Dependent on the GPS system. A GPS must be added to the Turtle, and a satellite set up to locate the Turtle.
+> Dependent on the GPS system. A satellite must be set up to locate the Turtle.
 
 > [!TIP]
 > The satellite construction diagram and its GPS programs are [available on GitHub](https://github.com/ValDin08/ComputerCraft_Satellite_GPS).
@@ -103,7 +105,7 @@ Program modified accordingly.*
 > The PixelLink module, [available on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), must be installed on the Turtle.
 
 > [!TIP]
-> The lumberjack server program 4.0-alpha02 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
+> The lumberjack server program 4.0-alpha04 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
 
 > [!WARNING]
 > For your Turtle to work properly, you need to adapt the coordinates below to your setup:
