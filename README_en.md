@@ -16,7 +16,7 @@ ComputerCraft program for a lumberjack turtle
 *local METIER = "Bucheron"
 shell.run(METIER)*
 ```
-  - Another solution: copy the code from *bucheron.lua* into your *startup.lua*.
+  - Another solution: copy the code from *Bucheron.lua* into your *startup.lua*.
   - Then go back to Minecraft and, in your Turtle, hold Ctrl + R until it restarts. The lumberjack program will start.
 
 ## Example of a wood farm layout: 
