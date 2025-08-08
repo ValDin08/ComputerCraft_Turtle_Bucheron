@@ -28,7 +28,7 @@ shell.run(METIER)*
 ---
 
 # Programme : Turtle Bucheron
-## Version : 4.0-alpha03
+## Version : 4.0-alpha04
 
 ### Patchnote : 
 
@@ -72,9 +72,11 @@ Modification de la trame d'informations envoyée au serveur.*
 *4.0-alpha02 : Intégration de PixelLink.
 Modification du programme en conséquence.*
 
+*4.0-alpha03 : Corrections programme pendant tests.*
+
 </details>
 
-**4.0-alpha03 : Corrections programme pendant tests**
+**4.0-alpha04 : Corrections programme pendant tests.**
 
 ### Roadmap :
 
@@ -103,7 +105,7 @@ Modification du programme en conséquence.*
 > Le module PixelLink, [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), doit être installé sur la Turtle.
 
 > [!TIP]
-> Le programme du serveur bucheron 4.0-alpha02 est [disponible en pre-release sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
+> Le programme du serveur bucheron 4.0-alpha04 est [disponible en pre-release sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
