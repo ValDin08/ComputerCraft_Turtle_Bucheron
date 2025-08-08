@@ -8,8 +8,12 @@ Programme ComputerCraft pour Turtle bucheron
 Installation du programme : 
   - Dans Minecraft, commencez par placer une turtle dans votre monde, cela va créer un dossier sur votre PC.
   - Dans la turtle, tapez la commande *id*, vous obtiendrez l'ID de votre turtle (numéro unique).
-  - Téléchargez le fichier *bucheron.lua*, puis copiez le dans : **saves/*MONDE*/computercraft/computer/*id*/** (le dossier *saves* se trouve dans votre dossier d'instance Minecraft/FTB).
-  - Dans votre fichier *startup.lua* de ce même dossier, vous pouvez taper *shell.run("bucheron")* (peut dépendre de votre version de CC:Tweaked, un simple *bucheron()* peut faire l'affaire).
+  - Téléchargez le fichier *Bucheron.lua*, puis copiez le dans : **saves/*MONDE*/computercraft/computer/*id*/** (le dossier *saves* se trouve dans votre dossier d'instance Minecraft/FTB).
+  - Dans votre fichier *startup.lua* de ce même dossier, vous pouvez taper (peut dépendre de votre version de CC:Tweaked) :
+```
+*local METIER = "Bucheron"
+shell.run(METIER)*
+```
   - Autre solution : copiez le code contenu dans *bucheron.lua* dans votre *startup.lua*.
   - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
 
