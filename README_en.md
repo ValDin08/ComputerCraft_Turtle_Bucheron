@@ -28,7 +28,7 @@ shell.run(METIER)*
 ---
 
 # Program: Turtle Bucheron
-## Version: 4.0-alpha04
+## Version: 4.0-alpha05
 
 ### Patchnote:
 
@@ -36,16 +36,16 @@ shell.run(METIER)*
   
 <summary>Show previous version history</summary>
 
-*1.0: Basic version of the lumberjack turtle  
+*1.0 : Basic version of the lumberjack turtle  
 Manual reloading and unloading of the turtle  
 Refueling only on turtle reboot  
 Can only manage 2 rows of trees of unlimited length.  
 The area must be delimited by the type of block to be placed in slot 3.*
 
-*1.1: Monitoring of material quantities in the inventory.  
+*1.1 : Monitoring of material quantities in the inventory.  
 Area limit monitoring below the turtle in addition to its front face.*
 
-*2.0: Program redesign  
+*2.0 : Program redesign  
 Added automatic inventory emptying/refilling for the turtle.  
 Added the ability to use multiple rows.  
 Added GPS.  
@@ -53,40 +53,44 @@ Removed boundary blocks, full GPS guidance.
 Enlarged inventory.  
 Added manual/auto operation mode - `Manual not yet operational.`*
 
-*2.1: Smoother inventory management.*
+*2.1 : Smoother inventory management.*
 
-*2.2: Case not taken into account in string entries.  
+*2.2 : Case not taken into account in string entries.  
 Display of program version at turtle startup.*
 
-*2.3: Bug fix for descending after tree cutting.*
+*2.3 : Bug fix for descending after tree cutting.*
 
-*3.0: Integration of network communication with the server.*
+*3.0 : Integration of network communication with the server.*
 
-*3.1: Sending position, orientation, and number of trees cut during the current run to the server with each communication cycle using the CraftNET protocol.*
+*3.1 : Sending position, orientation, and number of trees cut during the current run to the server with each communication cycle using the CraftNET protocol.*
 
-*3.2: Improved energy efficiency.*
+*3.2 : Improved energy efficiency.*
 
-*3.3: Added stop function for the turtle from the server.  
+*3.3 : Added stop function for the turtle from the server.  
 Changed the information frame sent to the server.*
 
-*4.0-alpha02: PixelLink integration.  
+*4.0-alpha02 : PixelLink integration.  
 Program modified accordingly.*
 
-*4.0-alpha03: Program corrections during tests.*
+*4.0-alpha03 : Program corrections during tests.*
+
+*4.0-alpha04 : Program corrections during tests.*
 
 </details>
 
-**4.0-alpha04: Program corrections during tests.**
+**4.0-alpha05 : Program corrections during tests.  
+Adding the smart detection of snake direction.  
+Consolidating PixelLink communication functions.**
 
 ### Roadmap:
 
-- [x] Make the Turtle return to its waiting position in case of loss of connection with the server: validated with several disconnections in various locations. (OK v4.0-alpha03)
-- [x] Same when the server no longer authorizes the Turtle to work. (OK v4.0-alpha03)
-- [x] Make the Turtle exit the zone when it needs to access a chest; it must restock/deposit in the correct chest. (OK v4.0-alpha03)
-- [x] Make the Turtle exit the zone when it needs to access several chests; it must restock/deposit in all chests. (OK v4.0-alpha04)
+- [x] OK v4.0-alpha03 : Make the Turtle return to its waiting position in case of loss of connection with the server: validated with several disconnections in various locations.
+- [x] OK v4.0-alpha03 : Same when the server no longer authorizes the Turtle to work.
+- [x] OK v4.0-alpha03 : Make the Turtle exit the zone when it needs to access a chest; it must restock/deposit in the correct chest.
+- [x] OK v4.0-alpha04 : Make the Turtle exit the zone when it needs to access several chests; it must restock/deposit in all chests.
 - [ ] Bug detected in v4.0-alpha03: the Turtle leaves its work area but stops immediately after losing connection to the server. Its position is displayed on the HMI. --> Single occurrence, to be monitored...
 - [ ] Test on another farm (new configuration, orientation...)
-- [ ] Have the Turtle figure out which way to turn at the first corner when starting the snake. The following turns will alternate left/right based on the first turn.
+- [x] OK v4.0-alpha05 : Have the Turtle figure out which way to turn at the first corner when starting the snake. The following turns will alternate left/right based on the first turn.
 - [ ] Add a hardcoded start positioning if started outside its starting point.
 
 ---
