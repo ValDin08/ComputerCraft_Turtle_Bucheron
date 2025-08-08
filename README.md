@@ -28,7 +28,7 @@ shell.run(METIER)*
 ---
 
 # Programme : Turtle Bucheron
-## Version : 4.0-alpha04
+## Version : 4.0-alpha05
 
 ### Patchnote : 
 
@@ -74,19 +74,23 @@ Modification du programme en conséquence.*
 
 *4.0-alpha03 : Corrections programme pendant tests.*
 
+*4.0-alpha04 : Corrections programme pendant tests.*
+
 </details>
 
-**4.0-alpha04 : Corrections programme pendant tests.**
+*4.0-alpha05 : Corrections programme pendant tests.  
+Ajout de la fonction de détection du sens de rotation intelligente.  
+Consolidation des fonctions de communication PixelLink.*
 
 ### Roadmap :
 
-- [x] Faire retourner la Turtle en position d'attente en cas de perte de connexion avec le serveur : validé avec plusieurs déconnexions à divers endroits. (OK v4.0-alpha03)
-- [x] Idem lorsque le serveur n'autorise plus le travail à la Turtle. (OK v4.0-alpha03)
-- [x] Faire sortir la Turtle lorsqu'elle a besoin d'accéder à un coffre, elle doit se ravitailler/déposer dans le bon coffre. (OK v4.0-alpha03)
-- [x] Faire sortir la Turtle lorsqu'elle a besoin d'accéder à plusieurs coffres, elle doit se ravitailler/déposer dans tous les coffres. (OK v4.0-alpha04)
+- [x] OK v4.0-alpha03 : Faire retourner la Turtle en position d'attente en cas de perte de connexion avec le serveur : validé avec plusieurs déconnexions à divers endroits.
+- [x] OK v4.0-alpha03 : Idem lorsque le serveur n'autorise plus le travail à la Turtle.
+- [x] OK v4.0-alpha03 : Faire sortir la Turtle lorsqu'elle a besoin d'accéder à un coffre, elle doit se ravitailler/déposer dans le bon coffre. 
+- [x] OK v4.0-alpha04 : Faire sortir la Turtle lorsqu'elle a besoin d'accéder à plusieurs coffres, elle doit se ravitailler/déposer dans tous les coffres. 
 - [ ] Bug détecté en v4.0-alpha03 : la Turtle quitte sa zone de travail, mais s'arrête immédiatement après avoir perdu la connexion au serveur. Sa position est affichée sur l'IHM. --> Une seule occurence, à surveiller...
 - [ ] Essais à faire sur une autre ferme (nouvelle configuration, orientation...)
-- [ ] Voir pour que la Turtle sache d'elle même dans quel sens tourner au premier virage pour le démarrage du snake. Les virages suivants seront ensuite fait en alternance gauche/droite en fonction du premier virage.
+- [x] OK v4.0-alpha05 : Voir pour que la Turtle sache d'elle même dans quel sens tourner au premier virage pour le démarrage du snake. Les virages suivants seront ensuite fait en alternance gauche/droite en fonction du premier virage.
 - [ ] Ajouter une mise en position de départ (écrite en dur) si démarrage en dehors de son point de départ.
 
 ---
