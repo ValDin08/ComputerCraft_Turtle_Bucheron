@@ -89,10 +89,10 @@ Modification du programme en conséquence.*
 
 ---
 > [!NOTE]
-> Sortie de la zone de bucheronage pour vidage et remplissage inventaire.
+> Sortie automatique de la zone de bucheronage pour vidage et remplissage inventaire.
 
 > [!IMPORTANT]
-> Dépendante du système GPS. Un GPS doit être ajouté à la Turtle et un satellite doit être mis en place afin de localiser la Turtle.
+> Dépendante du système GPS. Un satellite doit être mis en place afin de localiser la Turtle.
 
 > [!TIP]
 > Le schéma de construction du satellite et ses programmes GPS sont [disponibles sur GitHub](https://github.com/ValDin08/ComputerCraft_Satellite_GPS).
