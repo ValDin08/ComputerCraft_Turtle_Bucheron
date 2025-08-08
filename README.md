@@ -16,7 +16,7 @@ Installation du programme :
 *local METIER = "Bucheron"
 shell.run(METIER)*
 ```
-  - Autre solution : copiez le code contenu dans *bucheron.lua* dans votre *startup.lua*.
+  - Autre solution : copiez le code contenu dans *Bucheron.lua* dans votre *startup.lua*.
   - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
 
 ## Exemple de structure d'une ferme à bois : 
