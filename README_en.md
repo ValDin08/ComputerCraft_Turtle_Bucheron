@@ -83,7 +83,7 @@ Program modified accordingly.*
 - [x] Make the Turtle return to its waiting position in case of loss of connection with the server: validated with several disconnections in various locations. (OK v4.0-alpha03)
 - [x] Same when the server no longer authorizes the Turtle to work. (OK v4.0-alpha03)
 - [x] Make the Turtle exit the zone when it needs to access a chest; it must restock/deposit in the correct chest. (OK v4.0-alpha03)
-- [ ] Make the Turtle exit the zone when it needs to access several chests; it must restock/deposit in all chests.
+- [x] Make the Turtle exit the zone when it needs to access several chests; it must restock/deposit in all chests. (OK v4.0-alpha04)
 - [ ] Bug detected in v4.0-alpha03: the Turtle leaves its work area but stops immediately after losing connection to the server. Its position is displayed on the HMI. --> Single occurrence, to be monitored...
 - [ ] Test on another farm (new configuration, orientation...)
 - [ ] Have the Turtle figure out which way to turn at the first corner when starting the snake. The following turns will alternate left/right based on the first turn.
