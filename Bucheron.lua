@@ -382,15 +382,24 @@
 		function Movement()
 			GetGPSCurrentLoc()
 			-- Première rotation
-			if TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone == 0 then
-				if TurtleGPSPos[3] == zTreeLine[1] then
-					TurnRight()
-					MoveForward(2)
-					TurnRight()
-					MoveForward(1)
-					nextRotation = "left"
-					RangesDone = RangesDone + 1
+				if TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone == 0 then
+					if TurtleGPSPos[3] == zTreeLine[1] then
+						TurnRight()
+						MoveForward(2)
+						TurnRight()
+						nextRotation = "left"
+						
 
+					else
+						TurnLeft()
+						MoveForward(2)
+						TurnLeft()
+						nextRotation = "right"
+
+					end
+			
+					MoveForward(1)
+					RangesDone = RangesDone + 1
 			
 			-- Vérification zone de pousse des arbres
 				elseif TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone < RangesQty then
@@ -404,12 +413,13 @@
 						TurnLeft()
 						MoveForward(2)
 						TurnLeft()
-						MoveForward(1)
 						nextRotation = "right"
 				
 					end
 				
+				MoveForward(1)
 				RangesDone = RangesDone + 1
+		
 			elseif TurtleGPSPos[1] < (xTreeLine[1]-1) and RangesDone < RangesQty then
 				if nextRotation == "right" then
 						TurnRight()
@@ -421,11 +431,11 @@
 						TurnLeft()
 						MoveForward(2)
 						TurnLeft()
-						MoveForward(1)
 						nextRotation = "right"
 				
 					end
 			
+				MoveForward(1)
 				RangesDone = RangesDone + 1
 			
 			elseif RangesDone == RangesQty then
