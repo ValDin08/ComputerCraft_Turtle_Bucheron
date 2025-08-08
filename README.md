@@ -2,6 +2,8 @@
 <img width="804" height="789" alt="turtle bucheron" src="https://github.com/user-attachments/assets/15865d83-ad3f-4b03-ba68-0bbddb3e90d8" />
 </p>
 
+<img width="16" height="16" alt="image" src="https://github.com/user-attachments/assets/a03063ab-5834-437d-846d-acc130d903ab" /> [English version](README_en.md)
+
 # ComputerCraft Turtle Bucheron
 Programme ComputerCraft pour Turtle bucheron
 
