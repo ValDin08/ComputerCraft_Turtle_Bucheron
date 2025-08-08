@@ -69,7 +69,7 @@ Affichage de la version du programme au démarrage de la turtle.*
 *3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
 Modification de la trame d'informations envoyée au serveur.*
 
-*4.0-alpha02 : Intégration de PixelLink.
+*4.0-alpha02 : Intégration de PixelLink.  
 Modification du programme en conséquence.*
 
 *4.0-alpha03 : Corrections programme pendant tests.*
