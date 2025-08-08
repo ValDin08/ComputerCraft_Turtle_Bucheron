@@ -1,6 +1,6 @@
 -- DECLARATION DES VARIABLES
 	-- Globales
-		local ProgramVersion	=	"4.0a03"	-- Version actuelle du programme
+		local ProgramVersion	=	"4.0-a04"	-- Version actuelle du programme
 		local TurtleFunction	=	"bucheron"	-- Fonction de la turtle
 		local TreesHarvested 	=	0			-- Nombre d'arbres récoltés sur la run en cours
 		local ErrorDetected		=	false		-- Erreur détectée
@@ -39,6 +39,7 @@
 		local RangesQty			=	3	-- Nombre de rangées gérées par la turtle
 		local RangesDone		=	0	-- Nombre de rangées où la turtle est passée
 		local TypeOfMvmt		=	0	-- Type de mouvement (0 = Stop / 1 = Avance normale / 2 = Evitement pousse / 3 = Virage gauche / 4 = Virage droit / 5 = guidage GPS)
+		local nextRotation		=   ""  -- Rotation suivante
 		
 		-- Coordonnées
 			local TurtleGPSPos	=	{0, 0, 0}		-- Position GPS actuelle de la turle
@@ -380,19 +381,53 @@
 	-- DEPLACEMENTS
 		function Movement()
 			GetGPSCurrentLoc()
+			-- Première rotation
+			if TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone == 0 then
+				if TurtleGPSPos[3] == zTreeLine[1] then
+					TurnRight()
+					MoveForward(2)
+					TurnRight()
+					MoveForward(1)
+					nextRotation = "left"
+					RangesDone = RangesDone + 1
+
+			
 			-- Vérification zone de pousse des arbres
-			if TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone < RangesQty then
-				TurnRight()
-				MoveForward(2)
-				TurnRight()
-				MoveForward(1)
+				elseif TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone < RangesQty then
+					if nextRotation == "right" then
+						TurnRight()
+						MoveForward(2)
+						TurnRight()
+						nextRotation = "left"
+				
+					else
+						TurnLeft()
+						MoveForward(2)
+						TurnLeft()
+						MoveForward(1)
+						nextRotation = "right"
+				
+					end
+				
 				RangesDone = RangesDone + 1
 			elseif TurtleGPSPos[1] < (xTreeLine[1]-1) and RangesDone < RangesQty then
-				TurnLeft()
-				MoveForward(2)
-				TurnLeft()
-				MoveForward(1)
+				if nextRotation == "right" then
+						TurnRight()
+						MoveForward(2)
+						TurnRight()
+						nextRotation = "left"
+				
+					else
+						TurnLeft()
+						MoveForward(2)
+						TurnLeft()
+						MoveForward(1)
+						nextRotation = "right"
+				
+					end
+			
 				RangesDone = RangesDone + 1
+			
 			elseif RangesDone == RangesQty then
 				GetGPSCurrentLoc()
 				MoveForward(math.abs(TurtleGPSPos[1]-xTreeLine[1]))
@@ -401,11 +436,15 @@
 				MoveForward(math.abs(TurtleGPSPos[3]-zTreeLine[1]))
 				TurnRight()
 				RangesDone = 0
+			
 			else
 				CheckFrontBlock()
 				if TypeOfMvmt == 1 then MoveForward(1) end
+			
 			end
+		
 			CheckWorkZoneLimits()
+		
 		end
 
 	-- COUPE ET REPLANTAGE
