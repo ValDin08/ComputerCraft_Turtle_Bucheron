@@ -4,7 +4,7 @@
 
 <img width="16" height="16" alt="image" src="https://github.com/user-attachments/assets/ed9d7c93-42b9-4f00-a5ab-595a9fa1a3b3" /> [Version française](README.md)
 
-# ComputerCraft Turtle Bucheron
+# ComputerCraft Lumberjack Turtle
 ComputerCraft program for a lumberjack turtle
 
 ## Program installation: 
@@ -16,7 +16,7 @@ ComputerCraft program for a lumberjack turtle
 *local METIER = "Bucheron"
 shell.run(METIER)*
 ```
-  - Another solution: copy the code from *bucheron.lua* into your *startup.lua*.
+  - Another solution: copy the code from *Bucheron.lua* into your *startup.lua*.
   - Then go back to Minecraft and, in your Turtle, hold Ctrl + R until it restarts. The lumberjack program will start.
 
 ## Example of a wood farm layout: 
@@ -28,7 +28,7 @@ shell.run(METIER)*
 ---
 
 # Program: Turtle Bucheron
-## Version: 4.0-alpha03
+## Version: 4.0-alpha04
 
 ### Patchnote:
 
@@ -69,19 +69,21 @@ Display of program version at turtle startup.*
 *3.3: Added stop function for the turtle from the server.  
 Changed the information frame sent to the server.*
 
-*4.0-alpha02: PixelLink integration.
+*4.0-alpha02: PixelLink integration.  
 Program modified accordingly.*
+
+*4.0-alpha03: Program corrections during tests.*
 
 </details>
 
-**4.0-alpha03: Program corrections during tests**
+**4.0-alpha04: Program corrections during tests.**
 
 ### Roadmap:
 
 - [x] Make the Turtle return to its waiting position in case of loss of connection with the server: validated with several disconnections in various locations. (OK v4.0-alpha03)
 - [x] Same when the server no longer authorizes the Turtle to work. (OK v4.0-alpha03)
 - [x] Make the Turtle exit the zone when it needs to access a chest; it must restock/deposit in the correct chest. (OK v4.0-alpha03)
-- [ ] Make the Turtle exit the zone when it needs to access several chests; it must restock/deposit in all chests.
+- [x] Make the Turtle exit the zone when it needs to access several chests; it must restock/deposit in all chests. (OK v4.0-alpha04)
 - [ ] Bug detected in v4.0-alpha03: the Turtle leaves its work area but stops immediately after losing connection to the server. Its position is displayed on the HMI. --> Single occurrence, to be monitored...
 - [ ] Test on another farm (new configuration, orientation...)
 - [ ] Have the Turtle figure out which way to turn at the first corner when starting the snake. The following turns will alternate left/right based on the first turn.
@@ -89,10 +91,10 @@ Program modified accordingly.*
 
 ---
 > [!NOTE]
-> Exiting the logging area for inventory emptying and refilling.
+> Automaticaly exiting the logging area for inventory emptying and refilling.
 
 > [!IMPORTANT]
-> Dependent on the GPS system. A GPS must be added to the Turtle, and a satellite set up to locate the Turtle.
+> Dependent on the GPS system. A satellite must be set up to locate the Turtle.
 
 > [!TIP]
 > The satellite construction diagram and its GPS programs are [available on GitHub](https://github.com/ValDin08/ComputerCraft_Satellite_GPS).
@@ -103,7 +105,7 @@ Program modified accordingly.*
 > The PixelLink module, [available on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), must be installed on the Turtle.
 
 > [!TIP]
-> The lumberjack server program 4.0-alpha02 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
+> The lumberjack server program 4.0-alpha04 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
 
 > [!WARNING]
 > For your Turtle to work properly, you need to adapt the coordinates below to your setup:

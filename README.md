@@ -16,7 +16,7 @@ Installation du programme :
 *local METIER = "Bucheron"
 shell.run(METIER)*
 ```
-  - Autre solution : copiez le code contenu dans *bucheron.lua* dans votre *startup.lua*.
+  - Autre solution : copiez le code contenu dans *Bucheron.lua* dans votre *startup.lua*.
   - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
 
 ## Exemple de structure d'une ferme à bois : 
@@ -28,7 +28,7 @@ shell.run(METIER)*
 ---
 
 # Programme : Turtle Bucheron
-## Version : 4.0-alpha03
+## Version : 4.0-alpha04
 
 ### Patchnote : 
 
@@ -69,19 +69,21 @@ Affichage de la version du programme au démarrage de la turtle.*
 *3.3 : Ajout de la fonction d'arrêt de la turtle depuis le serveur.  
 Modification de la trame d'informations envoyée au serveur.*
 
-*4.0-alpha02 : Intégration de PixelLink.
+*4.0-alpha02 : Intégration de PixelLink.  
 Modification du programme en conséquence.*
+
+*4.0-alpha03 : Corrections programme pendant tests.*
 
 </details>
 
-**4.0-alpha03 : Corrections programme pendant tests**
+**4.0-alpha04 : Corrections programme pendant tests.**
 
 ### Roadmap :
 
 - [x] Faire retourner la Turtle en position d'attente en cas de perte de connexion avec le serveur : validé avec plusieurs déconnexions à divers endroits. (OK v4.0-alpha03)
 - [x] Idem lorsque le serveur n'autorise plus le travail à la Turtle. (OK v4.0-alpha03)
 - [x] Faire sortir la Turtle lorsqu'elle a besoin d'accéder à un coffre, elle doit se ravitailler/déposer dans le bon coffre. (OK v4.0-alpha03)
-- [ ] Faire sortir la Turtle lorsqu'elle a besoin d'accéder à plusieurs coffres, elle doit se ravitailler/déposer dans tous les coffres.
+- [x] Faire sortir la Turtle lorsqu'elle a besoin d'accéder à plusieurs coffres, elle doit se ravitailler/déposer dans tous les coffres. (OK v4.0-alpha04)
 - [ ] Bug détecté en v4.0-alpha03 : la Turtle quitte sa zone de travail, mais s'arrête immédiatement après avoir perdu la connexion au serveur. Sa position est affichée sur l'IHM. --> Une seule occurence, à surveiller...
 - [ ] Essais à faire sur une autre ferme (nouvelle configuration, orientation...)
 - [ ] Voir pour que la Turtle sache d'elle même dans quel sens tourner au premier virage pour le démarrage du snake. Les virages suivants seront ensuite fait en alternance gauche/droite en fonction du premier virage.
