@@ -21,7 +21,7 @@ shell.run(METIER)*
 
 ## Example of a wood farm layout: 
 <p align="center">
-<img width="909" height="536" alt="image" src="https://github.com/user-attachments/assets/f4812cc0-8590-4142-bb63-0441faa0f370" />
+<img width="612" height="465" alt="Capture d'écran 2025-08-08 094909" src="https://github.com/user-attachments/assets/e0e6f399-be8f-43d2-a72e-1c2ec364e417" />
 <img width="3840" height="2019" alt="2025-08-07_19 03 32" src="https://github.com/user-attachments/assets/b49c0819-012c-4e04-9d40-213d8377357a" />
 </p>
 
