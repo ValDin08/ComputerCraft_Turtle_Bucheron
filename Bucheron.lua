@@ -1,6 +1,6 @@
 -- DECLARATION DES VARIABLES
 	-- Globales
-		local ProgramVersion	=	"4.0-a04"	-- Version actuelle du programme
+		local ProgramVersion	=	"4.0-a05"	-- Version actuelle du programme
 		local TurtleFunction	=	"bucheron"	-- Fonction de la turtle
 		local TreesHarvested 	=	0			-- Nombre d'arbres récoltés sur la run en cours
 		local ErrorDetected		=	false		-- Erreur détectée
@@ -542,7 +542,7 @@
 					end
 				
 				-- Vérification besoin de vider les buches
-					if turtle.getItemCount(SWoodStock) > ((EWoodStock - SWoodStock + 1) * 64 - 32) then
+					if turtle.getItemCount(SWoodStock) > 32 then
 						InventoryNeeds = InventoryNeeds + 100
 					end
 				
@@ -628,14 +628,25 @@
 				FuelManagement()
 				InventoryCheck()
 				AuthFromServer()
+								
 				if InventoryNeeds == 0 and ServerAuthorized then
 					Movement()
 					StatusToServer()
+					
 				else
 					ExitWorkZone()
+					
 				end
-			end			
+				
+				if not ServerAuthorized then
+					print("Autorisation refusée, attente 5s avant nouvelle demande.")
+					os.sleep(5)
+				end
+				
+			end	
+			
 			if not ServerConnected then print("Connexion au serveur perdue, tentative de reconnexion...") end
+			
 		end
 
 -- PROGRAMME
