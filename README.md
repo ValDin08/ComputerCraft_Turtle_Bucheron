@@ -21,7 +21,7 @@ shell.run(METIER)*
 
 ## Exemple de structure d'une ferme à bois : 
 <p align="center">
-<img width="909" height="536" alt="image" src="https://github.com/user-attachments/assets/f4812cc0-8590-4142-bb63-0441faa0f370" />
+<img width="758" height="465" alt="Capture d'écran 2025-08-04 133309" src="https://github.com/user-attachments/assets/82b1ffb9-e710-42f6-a247-0b3832217c69" />
 <img width="3840" height="2019" alt="2025-08-07_19 03 32" src="https://github.com/user-attachments/assets/b49c0819-012c-4e04-9d40-213d8377357a" />
 </p>
 
