@@ -2,7 +2,7 @@
 <img width="804" height="789" alt="turtle bucheron" src="https://github.com/user-attachments/assets/15865d83-ad3f-4b03-ba68-0bbddb3e90d8" />
 </p>
 
-<img width="16" height="16" alt="image" src="https://github.com/user-attachments/assets/ed9d7c93-42b9-4f00-a5ab-595a9fa1a3b3" /> [Version française](README.md)
+<img width="16" height="16" alt="image" src="https://github.com/user-attachments/assets/ed9d7c93-42b9-4f00-a5ab-595a9fa1a3b3" /> [Version française](https://github.com/ValDin08/ComputerCraft_Turtle_Bucheron/blob/4ae07d564162da4e51c409a75ff27d72ae17620b/README.md)
 
 # ComputerCraft Lumberjack Turtle
 ComputerCraft program for a lumberjack turtle
