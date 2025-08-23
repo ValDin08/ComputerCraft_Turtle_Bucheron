@@ -10,13 +10,13 @@ ComputerCraft program for a lumberjack turtle
 ## Program installation: 
   - In Minecraft, start by placing a turtle in your world; this will create a folder on your PC.
   - In the turtle, type the *id* command; you will get your turtle's ID (unique number).
-  - Download the *Bucheron.lua* file, then copy it into: **saves/*WORLD*/computercraft/computer/*id*/** (the *saves* folder is in your Minecraft/FTB instance folder).
+  - Download the *Lumberjack.lua* file, then copy it into: **saves/*WORLD*/computercraft/computer/*id*/** (the *saves* folder is in your Minecraft/FTB instance folder).
   - In the *startup.lua* file in the same folder, you can type (may depend on your CC:Tweaked version):
 ```
-*local METIER = "Bucheron"
-shell.run(METIER)*
+*local JOB = "Lumberjack"
+shell.run(JOB)*
 ```
-  - Another solution: copy the code from *Bucheron.lua* into your *startup.lua*.
+  - Another solution: copy the code from *Lumberjack.lua* into your *startup.lua*.
   - Then go back to Minecraft and, in your Turtle, hold Ctrl + R until it restarts. The lumberjack program will start.
 
 ## Example of a wood farm layout: 
@@ -27,7 +27,7 @@ shell.run(METIER)*
 
 ---
 
-# Program: Turtle Bucheron
+# Program: Lumberjack Turtle
 ## Version: 4.0-alpha05
 
 ### Patchnote:
