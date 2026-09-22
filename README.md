@@ -137,7 +137,7 @@ Chaque génération regroupe une évolution majeure commune à toutes les turtle
 > Le module PixelLink, [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), doit être installé sur la Turtle.
 
 > [!TIP]
-> Le programme du serveur bucheron 4.0-beta01 est [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
+> Le programme du serveur bucheron 5.0-alpha01 est [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
