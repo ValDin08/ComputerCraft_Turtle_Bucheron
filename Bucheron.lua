@@ -1,6 +1,6 @@
 -- DECLARATION DES VARIABLES
 	-- Globales
-		local ProgramVersion	=	"4.0-a05"	-- Version actuelle du programme
+		local ProgramVersion	=	"5.0-alpha01"	-- Version actuelle du programme
 		local TurtleFunction	=	"bucheron"	-- Fonction de la turtle
 		local TreesHarvested 	=	0			-- Nombre d'arbres récoltés sur la run en cours
 		local ErrorDetected		=	false		-- Erreur détectée
@@ -8,10 +8,9 @@
 		local InCycle			=	false		-- Turtle en production
 		
 	-- Réseau
-		local LocalID			=	os.getComputerID()	-- ID de la turtle
 		local ServerID			=	11					-- ID du serveur
 		local ModemSide			=	"right"				-- Côté du modem sur la turtle
-		local ServerConnected	=	false				-- Serveur ateignable et connecté à la turtle
+		local ServerConnected	=	false				-- Serveur atteignable et connecté à la turtle
 		local ServerAuthorized	=	false				-- Serveur connecté à la turtle et autorisant le travail
 		local CurrentFuelLevel	=	0					-- Niveau de carburant actuel
 		local PixelLink 		=	require("PixelLink")
@@ -33,12 +32,19 @@
 			local LogQty 		=	0
 			
 		local InventoryNOK		=	0	-- Inventaire pas prêt pour démarrage de la turtle
-		local InventoryNeeds	=	0	-- Type de besoin de l'inventaire lors de la prochaine sortie (3 bits -- > 1 = Pousses à recharger / 10 = Carburant à recharger / 100 = Buches à déposer)
+		-- Besoins d'inventaire à la prochaine sortie, recalculés à chaque InventoryCheck()
+		local NeedWoodDrop		=	false	-- Besoin de déposer les buches
+		local NeedFuel			=	false	-- Besoin de récupérer du carburant
+		local NeedSaplings		=	false	-- Besoin de récupérer des pousses
+		-- Besoins forcés par le serveur (commande tactile), appliqués à la prochaine sortie puis effacés
+		local ForcedNeedWoodDrop	=	false
+		local ForcedNeedFuel		=	false
+		local LastAppliedCommandID	=	nil	-- Dernière commande serveur appliquée (évite de la réappliquer en boucle)
 			
 	-- Mouvements
 		local RangesQty			=	3	-- Nombre de rangées gérées par la turtle
 		local RangesDone		=	0	-- Nombre de rangées où la turtle est passée
-		local TypeOfMvmt		=	0	-- Type de mouvement (0 = Stop / 1 = Avance normale / 2 = Evitement pousse / 3 = Virage gauche / 4 = Virage droit / 5 = guidage GPS)
+		local TypeOfMvmt		=	0	-- Type de mouvement (0 = Stop / 1 = Avance normale)
 		local nextRotation		=   ""  -- Rotation suivante
 		
 		-- Coordonnées
@@ -123,11 +129,12 @@
 		function FuelManagement()
 			CurrentFuelLevel = turtle.getFuelLevel()
 			if CurrentFuelLevel < 100 then
-				Refuel()
+				return Refuel()
 			end
+			return false, ""
 		end
 
-		-- Ravitallement carburant
+		-- Ravitaillement carburant
 		function Refuel()
 			print("Ravitaillement turtle en cours...")
 			turtle.select(SFuel)
@@ -135,9 +142,9 @@
 			-- Vérification si le ravitaillement s'est correctement passé
 			if succes then
 				TransferIntraInventory(EFuel, SFuel, turtle.getItemCount(EFuel))
-				return {false, ""}
+				return false, ""
 			else
-				return {true, "Ravitaillement échoué"}
+				return true, "Ravitaillement échoué"
 			end
 		end
 
@@ -154,7 +161,12 @@
 			print("Calibrage position en cours...")
 			-- Acquisition de l'orientation initiale de la turtle
 			TurtleStartPos = TurtleGPSPos
-			turtle.forward()
+			-- Déplacement obligatoire pour déduire l'orientation : on dégage l'obstacle éventuel plutôt que de rester bloqué
+			while not turtle.forward() do
+				print("Calibrage bloqué par un obstacle, dégagement en cours...")
+				turtle.dig()
+				os.sleep(1)
+			end
 			GetGPSCurrentLoc()
 			if     (TurtleGPSPos[3]) < (TurtleStartPos[3]) then TurtleFacing = 1
 			elseif (TurtleGPSPos[3]) > (TurtleStartPos[3]) then TurtleFacing = 2
@@ -174,12 +186,14 @@
 			-- Rechargement en carburant de la turtle
 			ErrorDetected, Error = FuelManagement()
 			
-			if not ErrorDetected then 
-				print("Carburant OK.") 
+			if not ErrorDetected then
+				print("Carburant OK.")
 
-			else 
+			else
 				print(Error)
-				os.sleep()
+				print("Ravitaillement impossible, le système redémarrera dans 5 secondes.")
+				os.sleep(5)
+				os.reboot()
 
 			end
 			
@@ -281,10 +295,10 @@
 			
 			-- Si la turtle est au point de sortie, alors sortie autorisée
 			GetGPSCurrentLoc()
-			-- Actions en dehors de la zone 
-			if InventoryNeeds > 0 then
+			-- Actions en dehors de la zone
+			if NeedWoodDrop or NeedFuel or NeedSaplings then
 				-- Vérification besoin de dépose du bois
-				if InventoryNeeds >= 100 then
+				if NeedWoodDrop then
 					GetGPSCurrentLoc()
 					MoveForward(math.abs(TurtleGPSPos[3]-(LogsChest[3])))
 					TurnRight()
@@ -292,13 +306,19 @@
 					for i=SWoodStock,EWoodStock do
 						TransferExtraInventory(i, turtle.getItemCount(i))
 					end
-					InventoryNeeds = InventoryNeeds - 100
+					if InventoryMonitor(SWoodStock,EWoodStock) > 0 then
+						ErrorDetected = true
+						Error = "Coffre de buches plein, dépose incomplète"
+						print(Error)
+					end
+					NeedWoodDrop = false
+					ForcedNeedWoodDrop = false
 					MoveBackward(1)
-					if not InventoryNeeds == 0 then	TurnLeft() else TurnRight() end
+					if NeedFuel or NeedSaplings then TurnLeft() else TurnRight() end
 				end
-				
+
 				-- Vérification besoin rechargement en carburant
-				if InventoryNeeds >= 10 then
+				if NeedFuel then
 					GetGPSCurrentLoc()
 					MoveForward(math.abs(TurtleGPSPos[3]-(FuelChest[3])))
 					TurnRight()
@@ -306,13 +326,19 @@
 					for i=SFuel,EFuel do
 						TransferIntoInventory(i)
 					end
-					InventoryNeeds = InventoryNeeds - 10
+					if InventoryMonitor(SFuel,EFuel) < 8 then
+						ErrorDetected = true
+						Error = "Coffre de carburant vide ou insuffisant"
+						print(Error)
+					end
+					NeedFuel = false
+					ForcedNeedFuel = false
 					MoveBackward(1)
 					TurnRight()
 				end
-				
+
 				-- Vérification besoin rechargement en pousses
-				if InventoryNeeds == 1 then
+				if NeedSaplings then
 					GetGPSCurrentLoc()
 					MoveForward(math.abs(TurtleGPSPos[3]-SapsChest[3]))
 					if TurtleFacing == 1 then TurnLeft() elseif TurtleFacing == 2 then TurnRight() end
@@ -320,7 +346,12 @@
 					for i=SSapplings,ESapplings do
 						TransferIntoInventory(i)
 					end
-					InventoryNeeds = InventoryNeeds - 1
+					if InventoryMonitor(SSapplings,ESapplings) < 8 then
+						ErrorDetected = true
+						Error = "Coffre de pousses vide ou insuffisant"
+						print(Error)
+					end
+					NeedSaplings = false
 					MoveBackward(1)
 					TurnLeft()
 				end
@@ -351,13 +382,6 @@
 			GetGPSCurrentLoc()	
 		end
 
-		-- Bloc sous la turtle
-		function CheckBottomBlock()
-			-- Analyse du bloc sous la turtle
-			local BlockDetected, BlockName = turtle.inspectDown()
-			if BlockDetected == true then return BlockName.name end
-		end
-
 		-- Vérfication si dans les limites
 		function CheckWorkZoneLimits()
 			-- Réacquisition de la position GPS
@@ -379,82 +403,51 @@
 		end
 
 	-- DEPLACEMENTS
+		-- Virage de fin de rangée (factorisé : identique pour la 1ère rotation et les suivantes)
+		function TurnAtRowEnd(direction)
+			if direction == "right" then
+				TurnRight()
+				MoveForward(2)
+				TurnRight()
+				nextRotation = "left"
+			else
+				TurnLeft()
+				MoveForward(2)
+				TurnLeft()
+				nextRotation = "right"
+			end
+
+			MoveForward(1)
+			RangesDone = RangesDone + 1
+		end
+
 		function Movement()
 			GetGPSCurrentLoc()
 			-- Première rotation
 				if TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone == 0 then
-					if TurtleGPSPos[3] == zTreeLine[1] then
-						TurnRight()
-						MoveForward(2)
-						TurnRight()
-						nextRotation = "left"
-						
+					TurnAtRowEnd(TurtleGPSPos[3] == zTreeLine[1] and "right" or "left")
 
-					else
-						TurnLeft()
-						MoveForward(2)
-						TurnLeft()
-						nextRotation = "right"
-
-					end
-			
-					MoveForward(1)
-					RangesDone = RangesDone + 1
-			
 			-- Vérification zone de pousse des arbres
-				elseif TurtleGPSPos[1] > (xTreeLine[2]+1) and RangesDone < RangesQty then
-					if nextRotation == "right" then
-						TurnRight()
-						MoveForward(2)
-						TurnRight()
-						nextRotation = "left"
-				
-					else
-						TurnLeft()
-						MoveForward(2)
-						TurnLeft()
-						nextRotation = "right"
-				
-					end
-				
-				MoveForward(1)
-				RangesDone = RangesDone + 1
-		
-			elseif TurtleGPSPos[1] < (xTreeLine[1]-1) and RangesDone < RangesQty then
-				if nextRotation == "right" then
-						TurnRight()
-						MoveForward(2)
-						TurnRight()
-						nextRotation = "left"
-				
-					else
-						TurnLeft()
-						MoveForward(2)
-						TurnLeft()
-						nextRotation = "right"
-				
-					end
-			
-				MoveForward(1)
-				RangesDone = RangesDone + 1
-			
+				elseif (TurtleGPSPos[1] > (xTreeLine[2]+1) or TurtleGPSPos[1] < (xTreeLine[1]-1)) and RangesDone < RangesQty then
+					TurnAtRowEnd(nextRotation)
+
 			elseif RangesDone == RangesQty then
 				GetGPSCurrentLoc()
 				MoveForward(math.abs(TurtleGPSPos[1]-xTreeLine[1]))
 				MoveForward(1)
-				TurnRight()	
+				TurnRight()
 				MoveForward(math.abs(TurtleGPSPos[3]-zTreeLine[1]))
 				TurnRight()
 				RangesDone = 0
-			
+
 			else
 				CheckFrontBlock()
 				if TypeOfMvmt == 1 then MoveForward(1) end
-			
+
 			end
-		
+
 			CheckWorkZoneLimits()
-		
+
 		end
 
 	-- COUPE ET REPLANTAGE
@@ -464,19 +457,22 @@
 			-- Récupération du premier bloc et positionnement sous l'arbre
 			turtle.dig()
 			MoveForward(1)
-			
-			-- Minage de l'arbre complet
+
+			-- Minage de l'arbre complet, en comptant la hauteur montée pour pouvoir redescendre exactement d'autant
+			-- (on ne peut pas supposer que le sol est toujours "minecraft:dirt" : herbe, podzol, trou, etc.)
+			local TreeHeight = 0
 			while turtle.detectUp() do
 				turtle.digUp()
 				MoveUp(1)
+				TreeHeight = TreeHeight + 1
 			end
-			
-			-- Redescente au sol
-			while CheckBottomBlock() ~= "minecraft:dirt" do
+
+			-- Redescente au sol : exactement le nombre de blocs montés
+			for i = 1, TreeHeight do
 				turtle.digDown()
 				MoveDown(1)
 			end
-			
+
 			MoveUp(1)
 			-- Appel de la fonction de replantage
 			Replant()
@@ -509,7 +505,9 @@
 		-- Transfert vers l'inventaire depuis l'exterieur
 			function TransferIntoInventory(SlotTo)
 				turtle.select(SlotTo)
-				turtle.suck(64-turtle.getItemCount())
+				local before = turtle.getItemCount(SlotTo)
+				turtle.suck(64-before)
+				return turtle.getItemCount(SlotTo) > before
 			end
 
 		-- Transfert au sein de l'inventaire
@@ -541,20 +539,20 @@
 						end
 					end
 				
-				-- Vérification besoin de vider les buches
-					if turtle.getItemCount(SWoodStock) > 32 then
-						InventoryNeeds = InventoryNeeds + 100
-					end
-				
+				-- Recalcul complet des besoins à chaque passage (évite toute dérive si un besoin
+				-- précédent n'a pas pu être totalement comblé, cf TransferIntoInventory), en tenant
+				-- compte des demandes forcées par le serveur (commande tactile de l'IHM)
+
+				-- Vérification besoin de vider les buches (sur le total réel du stock, pas un seul slot :
+				-- le transfert ci-dessus remplit les slots en partant de EWoodStock, donc SWoodStock
+				-- est le dernier à se remplir et ne peut pas servir seul de déclencheur)
+					NeedWoodDrop = (LogQty > ((EWoodStock - SWoodStock + 1) * 32)) or ForcedNeedWoodDrop
+
 				-- Vérification besoin de récupérer du carburant
-					if FuelQty < 8 then
-						InventoryNeeds = InventoryNeeds + 10
-					end
-				
+					NeedFuel = (FuelQty < 8) or ForcedNeedFuel
+
 				-- Vérification besoin de récupérer des pousses
-					if SapplingsQty < 8 then
-						InventoryNeeds = InventoryNeeds + 1
-					end
+					NeedSaplings = SapplingsQty < 8
 		end
 
 	-- PIXELLINK
@@ -583,10 +581,11 @@
 						harvestedMaterial 	= LogQty,               
 						misc    			= 0                  
 						},
-					errors      = {Error},                    
-					extra       = {}
+					errors        = {Error},
+					ackCommandId  = LastAppliedCommandID, -- Accusé de réception de la dernière commande serveur appliquée
+					extra         = {}
 
-					}				
+					}
 				PixelLink.send("status", "turtle", ServerID, payload)
 			end	
 
@@ -608,7 +607,29 @@
 
 				end
 
-				if ServerConnected and ServerAuthorized then 
+				-- Traitement d'une éventuelle commande forcée par le serveur (boutons tactiles de l'IHM).
+				-- Le filtrage par ID évite de la réappliquer à chaque interrogation tant que le serveur
+				-- n'a pas accusé réception via StatusToServer (ackCommandId).
+				if payload and type(payload) == "table" and payload.command and payload.command.id ~= LastAppliedCommandID then
+					local cmd = payload.command
+					if cmd.type == "forceRefuel" then
+						ForcedNeedFuel = true
+						print("Commande serveur reçue : ravitaillement forcé")
+
+					elseif cmd.type == "forceEmpty" then
+						ForcedNeedWoodDrop = true
+						print("Commande serveur reçue : vidage forcé")
+
+					elseif cmd.type == "resync" then
+						print("Commande serveur reçue : resynchronisation")
+						ConnectToServer()
+						StatusToServer()
+
+					end
+					LastAppliedCommandID = cmd.id
+				end
+
+				if ServerConnected and ServerAuthorized then
 					print("Serveur connecté, autorisation de travailler") 
 
 				elseif ServerConnected and not ServerAuthorized then
@@ -629,7 +650,7 @@
 				InventoryCheck()
 				AuthFromServer()
 								
-				if InventoryNeeds == 0 and ServerAuthorized then
+				if not (NeedWoodDrop or NeedFuel or NeedSaplings) and ServerAuthorized then
 					Movement()
 					StatusToServer()
 					

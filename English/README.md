@@ -28,7 +28,8 @@ shell.run(JOB)*
 ---
 
 # Program: Lumberjack Turtle
-## Version: 4.0-alpha05
+## Version: 5.0-alpha01
+### Generation: Lumen 🔆
 
 ### Patchnote:
 
@@ -76,11 +77,24 @@ Program modified accordingly.*
 
 *4.0-alpha04 : Program corrections during tests.*
 
+*4.0-alpha05 : Program corrections during tests.  
+Adding the smart detection of snake direction.  
+Consolidating PixelLink communication functions.*
+
 </details>
 
-**4.0-alpha05 : Program corrections during tests.  
-Adding the smart detection of snake direction.  
-Consolidating PixelLink communication functions.**
+**5.0-alpha01 : Implemented touchscreen buttons on the server screen.  
+Removed work authorization via a physical redstone lever.  
+Consolidated PixelLink communication functions.  
+Fixed refueling error reporting (a fuel failure was never actually detected).  
+The turtle now genuinely stops (reboots) if refueling fails at startup, instead of silently continuing.  
+Fixed an operator-precedence bug preventing the turtle from turning correctly toward chests based on remaining needs.  
+Fixed the logs drop-off trigger, now based on the total stock rather than a single slot that always filled last.  
+Removed the assumption that the ground is always dirt when descending after felling a tree (counts blocks climbed/descended instead).  
+Handled an obstacle blocking position calibration at startup (automatic clearing).  
+Actually verifies the success of each restock (logs/fuel/saplings), reporting an error on failure.  
+Fully recomputes inventory needs on every pass, preventing any drift.  
+Fixed the "Turtle connected" status never turning back to NO after an actual disconnection.**
 
 ### Roadmap:
 
@@ -92,6 +106,20 @@ Consolidating PixelLink communication functions.**
 - [ ] Test on another farm (new configuration, orientation...)
 - [x] OK v4.0-alpha05 : Have the Turtle figure out which way to turn at the first corner when starting the snake. The following turns will alternate left/right based on the first turn.
 - [ ] Add a hardcoded start positioning if started outside its starting point.
+
+---
+
+### 🚀 Generations
+
+Each generation groups a major evolution shared by every turtle in the project (lumberjack, farmer, miner...), independently of each one's own version number:
+
+| Generation | Name | Defining trait |
+|---|---|---|
+| 1 | **Flint** | Basic manual version: hand-loaded/unloaded, no network, no GPS. |
+| 2 | **Vector** | Full autonomy: GPS guidance, automatic inventory management, multiple rows. |
+| 3 | **Echo** | Network arrives: communication with a server (CraftNET protocol), remote stop. |
+| 4 | **Nexus** | PixelLink protocol: consolidated communications, smart rotation detection. |
+| 5 | **Lumen** | Full touchscreen control from the server screen, no more physical lever. |
 
 ---
 > [!NOTE]

@@ -28,7 +28,8 @@ shell.run(METIER)*
 ---
 
 # Programme : Turtle Bucheron
-## Version : 4.0-alpha05
+## Version : 5.0-alpha01
+### Génération : Lumen 🔆
 
 ### Patchnote : 
 
@@ -76,11 +77,24 @@ Modification du programme en conséquence.*
 
 *4.0-alpha04 : Corrections programme pendant tests.*
 
-</details>
-
 *4.0-alpha05 : Corrections programme pendant tests.  
 Ajout de la fonction de détection du sens de rotation intelligente.  
 Consolidation des fonctions de communication PixelLink.*
+
+</details>
+
+*5.0-alpha01 : Implémentation de touches tactiles sur l'écran du serveur.  
+Suppression de l'autorisation de marche via un levier redstone.  
+Consolidation des fonctions de communication PixelLink.  
+Correction de la remontée d'erreurs de ravitaillement (un échec de carburant n'était jamais détecté).  
+Arrêt réel (redémarrage) de la turtle en cas d'échec de ravitaillement au démarrage, au lieu de continuer silencieusement.  
+Correction d'un bug de précédence empêchant la turtle de tourner correctement vers les coffres selon les besoins restants.  
+Correction du déclencheur de dépose des buches, basé désormais sur le stock total plutôt qu'un seul slot qui se remplissait toujours en dernier.  
+Suppression de l'hypothèse d'un sol toujours en terre à la redescente après abattage (comptage des blocs montés/descendus à la place).  
+Gestion d'un obstacle bloquant le calibrage de position au démarrage (dégagement automatique).  
+Vérification effective du succès de chaque ravitaillement (buches/carburant/pousses), avec remontée d'erreur en cas d'échec.  
+Recalcul complet des besoins d'inventaire à chaque passage, pour éviter toute dérive.  
+Correction de la persistance de l'état "Turtle connectée" qui ne redevenait jamais NON après une perte de connexion réelle.*
 
 ### Roadmap :
 
@@ -92,6 +106,20 @@ Consolidation des fonctions de communication PixelLink.*
 - [ ] Essais à faire sur une autre ferme (nouvelle configuration, orientation...)
 - [x] OK v4.0-alpha05 : Voir pour que la Turtle sache d'elle même dans quel sens tourner au premier virage pour le démarrage du snake. Les virages suivants seront ensuite fait en alternance gauche/droite en fonction du premier virage.
 - [ ] Ajouter une mise en position de départ (écrite en dur) si démarrage en dehors de son point de départ.
+
+---
+
+### 🚀 Générations
+
+Chaque génération regroupe une évolution majeure commune à toutes les turtles du projet (bûcheron, fermier, mineur...), indépendamment du numéro de version propre à chacune :
+
+| Génération | Nom | Caractéristique |
+|---|---|---|
+| 1 | **Flint** | Version manuelle de base : rechargement/déchargement à la main, sans réseau ni GPS. |
+| 2 | **Vector** | Autonomie complète : guidage GPS, gestion automatique de l'inventaire, rangées multiples. |
+| 3 | **Echo** | Arrivée du réseau : communication avec un serveur (protocole CraftNET), arrêt à distance. |
+| 4 | **Nexus** | Protocole PixelLink : communications consolidées, détection de rotation intelligente. |
+| 5 | **Lumen** | Pilotage tactile complet depuis l'écran du serveur, fin du levier physique. |
 
 ---
 > [!NOTE]
