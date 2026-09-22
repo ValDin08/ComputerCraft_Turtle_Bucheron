@@ -137,7 +137,7 @@ Each generation groups a major evolution shared by every turtle in the project (
 > The PixelLink module, [available on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), must be installed on the Turtle.
 
 > [!TIP]
-> The lumberjack server program 4.0-alpha04 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur%20Bucheron).
+> The lumberjack server program 5.0-alpha01 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/English/Lumberjack_Server).
 
 > [!WARNING]
 > For your Turtle to work properly, you need to adapt the coordinates below to your setup:
