@@ -10,13 +10,14 @@ ComputerCraft program for a lumberjack turtle
 ## Program installation: 
   - In Minecraft, start by placing a turtle in your world; this will create a folder on your PC.
   - In the turtle, type the *id* command; you will get your turtle's ID (unique number).
-  - Download the *Lumberjack.lua* file, then copy it into: **saves/*WORLD*/computercraft/computer/*id*/** (the *saves* folder is in your Minecraft/FTB instance folder).
-  - In the *startup.lua* file in the same folder, you can type (may depend on your CC:Tweaked version):
+  - Download the *Lumberjack.lua* and *startup.lua* files, then copy them into: **saves/*WORLD*/computercraft/computer/*id*/** (the *saves* folder is in your Minecraft/FTB instance folder).
+  - *Lumberjack.lua* is now strictly identical across every lumberjack turtle: all instance-specific configuration (which server to join) lives exclusively in *startup.lua*.
+  - Open *startup.lua* and adapt `SERVER_HOSTNAME` if needed to the service name your server announces on the PixelLink network (`bucheron_server` by default):
 ```
-*local JOB = "Lumberjack"
-shell.run(JOB)*
+local JOB = "Lumberjack"
+local SERVER_HOSTNAME = "bucheron_server"
+shell.run(JOB, SERVER_HOSTNAME)
 ```
-  - Another solution: copy the code from *Lumberjack.lua* into your *startup.lua*.
   - Then go back to Minecraft and, in your Turtle, hold Ctrl + R until it restarts. The lumberjack program will start.
 
 ## Example of a wood farm layout: 
@@ -28,7 +29,7 @@ shell.run(JOB)*
 ---
 
 # Program: Lumberjack Turtle
-## Version: 5.0-alpha01
+## Version: 5.0-alpha02
 ### Generation: Lumen 🔆
 
 ### Patchnote:
@@ -81,8 +82,6 @@ Program modified accordingly.*
 Adding the smart detection of snake direction.  
 Consolidating PixelLink communication functions.*
 
-</details>
-
 **5.0-alpha01 : Implemented touchscreen buttons on the server screen.  
 Removed work authorization via a physical redstone lever.  
 Consolidated PixelLink communication functions.  
@@ -95,6 +94,13 @@ Handled an obstacle blocking position calibration at startup (automatic clearing
 Actually verifies the success of each restock (logs/fuel/saplings), reporting an error on failure.  
 Fully recomputes inventory needs on every pass, preventing any drift.  
 Fixed the "Turtle connected" status never turning back to NO after an actual disconnection.**
+
+</details>
+
+*5.0-alpha02 : Server discovery by service name (PixelLink.resolve) instead of a hardcoded ID, with periodic retries until the server is found.  
+The server to join is now configured only in *startup.lua* (argument passed to the program): *Lumberjack.lua* stays strictly identical across every turtle.  
+Fixed a height-drift ("staircase") bug when felling consecutive trees, now anchored on the real GPS position instead of a movement count.  
+Raised the trigger threshold for sorting/dropping off wood to reduce the frequency of `turtle.transferTo()` calls, which are time-costly, smoothing out the turtle's operation.*
 
 ### Roadmap:
 
@@ -137,12 +143,11 @@ Each generation groups a major evolution shared by every turtle in the project (
 > The PixelLink module, [available on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), must be installed on the Turtle.
 
 > [!TIP]
-> The lumberjack server program 5.0-alpha01 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/English/Lumberjack_Server).
+> The lumberjack server program 5.0-alpha02 is [available as a pre-release on GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/English/Lumberjack_Server).
 
 > [!WARNING]
 > For your Turtle to work properly, you need to adapt the coordinates below to your setup:
 > <img width="1407" height="380" alt="image" src="https://github.com/user-attachments/assets/be7f7b5d-6331-40ab-8610-66999624b9bd" />
 
 > [!WARNING]
-> For your Turtle to work properly, you need to adapt the server ID and the side where your Modem is located:
-> <img width="1001" height="182" alt="image" src="https://github.com/user-attachments/assets/c485b2db-7ea6-4c09-a44b-e4e84dbb856f" />
+> As of v5.0-alpha02, the Turtle automatically finds the server by its service name (no more hardcoded ID): only the name (in *startup.lua*) and the Modem's side (`ModemSide` variable in *Lumberjack.lua*) need to match your setup.

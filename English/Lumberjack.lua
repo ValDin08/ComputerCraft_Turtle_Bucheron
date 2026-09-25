@@ -1,6 +1,6 @@
 -- VARIABLE DECLARATION
 	-- Globals
-		local ProgramVersion	=	"5.0-alpha01"	-- Current program version
+		local ProgramVersion	=	"5.0-alpha02"	-- Current program version
 		local TurtleFunction	=	"bucheron"	-- Turtle function
 		local TreesHarvested 	=	0			-- Number of trees harvested in the current run
 		local ErrorDetected		=	false		-- Error detected
@@ -8,7 +8,10 @@
 		local InCycle			=	false		-- Turtle in production
 
 	-- Network
-		local ServerID			=	11					-- Server ID
+		local ServerID			=	nil					-- Server ID, resolved dynamically at startup (cf PROGRAM)
+		-- Server's service name on the PixelLink network: passed as an argument from startup.lua
+		-- (shell.run("Lumberjack", "bucheron_server")), with a default if launched without an argument
+		local ServerHostname	=	... or "bucheron_server"
 		local ModemSide			=	"right"				-- Modem side on the turtle
 		local ServerConnected	=	false				-- Server reachable and connected to the turtle
 		local ServerAuthorized	=	false				-- Server connected to the turtle and authorizing work
@@ -453,29 +456,56 @@
 	-- CUTTING AND REPLANTING
 		-- Cut
 		function CutDown()
+			-- Identify this tree's wood type before touching it, so trunk and ground can be told
+			-- apart later without a hardcoded block name (nor assuming the ground is always
+			-- "minecraft:dirt": grass, podzol, etc.)
+			local _, FrontBlock = turtle.inspect()
+			local LogBlockName = FrontBlock and FrontBlock.name
+
+			-- Patrol height the turtle MUST return to when leaving this function, whatever the
+			-- tree's exact structure turns out to be — otherwise it drifts up by one block per tree
+			-- cut (a simple up/down move count isn't enough: replanting itself adds a displacement
+			-- that has to be compensated, see below).
+			GetGPSCurrentLoc()
+			local PatrolHeight = TurtleGPSPos[2]
+
 			turtle.select(WoodType)
 			-- Harvest the first block and get under the tree
 			turtle.dig()
 			MoveForward(1)
 
-			-- Mine the whole tree, counting the height climbed so we can come back down by exactly
-			-- as much (we can't assume the ground is always "minecraft:dirt": grass, podzol, a hole, etc.)
-			local TreeHeight = 0
+			-- Mine the whole tree upward
 			while turtle.detectUp() do
 				turtle.digUp()
 				MoveUp(1)
-				TreeHeight = TreeHeight + 1
 			end
 
-			-- Descend back to the ground: exactly the number of blocks climbed
-			for i = 1, TreeHeight do
+			-- Descend back to patrol height
+			while TurtleGPSPos[2] > PatrolHeight do
 				turtle.digDown()
 				MoveDown(1)
 			end
 
+			-- The trunk can extend below patrol height depending on the terrain (the turtle never
+			-- looks below before starting to climb): keep digging down as long as it's still the
+			-- same wood.
+			while LogBlockName do
+				local Detected, Block = turtle.inspectDown()
+				if not Detected or Block.name ~= LogBlockName then break end
+				turtle.digDown()
+				MoveDown(1)
+			end
+
+			-- Replant, then return exactly to patrol height. The MoveDown(1) cancels out the
+			-- preceding MoveUp(1): planting must never leave any residual vertical drift, however
+			-- far below patrol height the turtle had to go.
 			MoveUp(1)
-			-- Call the replant function
 			Replant()
+			MoveDown(1)
+
+			while TurtleGPSPos[2] < PatrolHeight do
+				MoveUp(1)
+			end
 
 			TreesHarvested = TreesHarvested + 1
 		end
@@ -529,8 +559,11 @@
 					FuelQty = InventoryMonitor(SFuel,EFuel)
 					LogQty = InventoryMonitor(SWoodStock,EWoodStock)
 
-				-- Moving logs within the inventory
-					if turtle.getItemCount(WoodType) > 1 then
+				-- Moving logs within the inventory. Deliberately high threshold (not just >1):
+				-- turtle.transferTo() goes through the same command queue as physical actions and so
+				-- has a real cost per call — no point sorting the moment there's a single log, plenty
+				-- of margin to never overflow between two passes.
+					if turtle.getItemCount(WoodType) > 32 then
 						for i=EWoodStock,SWoodStock, -1 do
 							if turtle.getItemCount(i) <= (64 - (turtle.getItemCount(WoodType) - 1)) then
 								TransferIntraInventory(WoodType, i, turtle.getItemCount(WoodType) - 1)
@@ -675,6 +708,18 @@
 	-- Opening the connection to the RedNET network
 	if PixelLink then
 		rednet.open(ModemSide)
+
+		-- Resolve the server by name rather than a hardcoded ID (once at startup: implies a network
+		-- round-trip, and a computer's ID never changes between reboots)
+		print("Resolving server '"..ServerHostname.."'...")
+		while not ServerID do
+			ServerID = PixelLink.resolve(ServerHostname)
+			if not ServerID then
+				print("Server '"..ServerHostname.."' not found, retrying in 5s.")
+				os.sleep(5)
+			end
+		end
+		print("Server resolved: ID #"..ServerID)
 
 		while true do
 			while not ServerConnected do

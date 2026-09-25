@@ -1,6 +1,6 @@
 -- DECLARATION DES VARIABLES
 	-- Globales
-		local ProgramVersion	=	"5.0-alpha01"	-- Version actuelle du programme
+		local ProgramVersion	=	"5.0-alpha02"	-- Version actuelle du programme
 		local TurtleFunction	=	"bucheron"	-- Fonction de la turtle
 		local TreesHarvested 	=	0			-- Nombre d'arbres récoltés sur la run en cours
 		local ErrorDetected		=	false		-- Erreur détectée
@@ -8,7 +8,10 @@
 		local InCycle			=	false		-- Turtle en production
 		
 	-- Réseau
-		local ServerID			=	11					-- ID du serveur
+		local ServerID			=	nil					-- ID du serveur, résolu dynamiquement au démarrage (cf PROGRAMME)
+		-- Nom de service du serveur sur le réseau PixelLink : passé en argument depuis startup.lua
+		-- (shell.run("Bucheron", "bucheron_server")), avec une valeur par défaut si lancé sans argument
+		local ServerHostname	=	... or "bucheron_server"
 		local ModemSide			=	"right"				-- Côté du modem sur la turtle
 		local ServerConnected	=	false				-- Serveur atteignable et connecté à la turtle
 		local ServerAuthorized	=	false				-- Serveur connecté à la turtle et autorisant le travail
@@ -453,30 +456,57 @@
 	-- COUPE ET REPLANTAGE
 		-- Coupe
 		function CutDown()
+			-- Identification du type de bois de CET arbre avant d'y toucher, pour pouvoir distinguer
+			-- tronc et sol ensuite sans dépendre d'un nom de bloc codé en dur (ni supposer que le sol
+			-- est toujours "minecraft:dirt" : herbe, podzol, etc.)
+			local _, FrontBlock = turtle.inspect()
+			local LogBlockName = FrontBlock and FrontBlock.name
+
+			-- Hauteur de patrouille à laquelle la turtle DOIT impérativement revenir en sortant de
+			-- cette fonction, quelle que soit la structure exacte de l'arbre — sans quoi elle dérive
+			-- d'un cran vers le haut à chaque arbre coupé (un simple comptage montée/descente ne
+			-- suffit pas : le replantage lui-même ajoute un déplacement à compenser, cf plus bas).
+			GetGPSCurrentLoc()
+			local PatrolHeight = TurtleGPSPos[2]
+
 			turtle.select(WoodType)
 			-- Récupération du premier bloc et positionnement sous l'arbre
 			turtle.dig()
 			MoveForward(1)
 
-			-- Minage de l'arbre complet, en comptant la hauteur montée pour pouvoir redescendre exactement d'autant
-			-- (on ne peut pas supposer que le sol est toujours "minecraft:dirt" : herbe, podzol, trou, etc.)
-			local TreeHeight = 0
+			-- Minage de l'arbre complet vers le haut
 			while turtle.detectUp() do
 				turtle.digUp()
 				MoveUp(1)
-				TreeHeight = TreeHeight + 1
 			end
 
-			-- Redescente au sol : exactement le nombre de blocs montés
-			for i = 1, TreeHeight do
+			-- Redescente jusqu'à la hauteur de patrouille
+			while TurtleGPSPos[2] > PatrolHeight do
 				turtle.digDown()
 				MoveDown(1)
 			end
 
+			-- Le tronc peut descendre sous la hauteur de patrouille de la turtle selon le terrain
+			-- (elle ne regarde jamais en dessous avant de commencer à monter) : on continue à creuser
+			-- vers le bas tant qu'il y a encore le même bois.
+			while LogBlockName do
+				local Detected, Block = turtle.inspectDown()
+				if not Detected or Block.name ~= LogBlockName then break end
+				turtle.digDown()
+				MoveDown(1)
+			end
+
+			-- Replantage, puis retour exact à la hauteur de patrouille. Le MoveDown(1) annule le
+			-- MoveUp(1) qui précède : planter ne doit jamais laisser de dérive verticale résiduelle,
+			-- peu importe jusqu'où la turtle est descendue sous la hauteur de patrouille.
 			MoveUp(1)
-			-- Appel de la fonction de replantage
 			Replant()
-			
+			MoveDown(1)
+
+			while TurtleGPSPos[2] < PatrolHeight do
+				MoveUp(1)
+			end
+
 			TreesHarvested = TreesHarvested + 1
 		end
 
@@ -529,8 +559,11 @@
 					FuelQty = InventoryMonitor(SFuel,EFuel)
 					LogQty = InventoryMonitor(SWoodStock,EWoodStock)
 
-				-- Déplacement des buches dans l'inventaire
-					if turtle.getItemCount(WoodType) > 1 then
+				-- Déplacement des buches dans l'inventaire. Seuil volontairement haut (pas juste >1) :
+				-- turtle.transferTo() passe par la même file de commandes que les actions physiques
+				-- et a donc un coût réel par appel, inutile de trier dès qu'il y a la moindre buche —
+				-- largement assez de marge pour ne jamais déborder entre deux passages.
+					if turtle.getItemCount(WoodType) > 32 then
 						for i=EWoodStock,SWoodStock, -1 do
 							if turtle.getItemCount(i) <= (64 - (turtle.getItemCount(WoodType) - 1)) then
 								TransferIntraInventory(WoodType, i, turtle.getItemCount(WoodType) - 1)
@@ -675,6 +708,18 @@
 	-- Ouverture de la connexion au réseau RedNET
 	if PixelLink then
 		rednet.open(ModemSide)
+
+		-- Résolution du serveur par nom plutôt qu'un ID codé en dur (une seule fois au démarrage :
+		-- implique un aller-retour réseau, et l'ID d'un computer ne change pas entre deux redémarrages)
+		print("Résolution du serveur '"..ServerHostname.."'...")
+		while not ServerID do
+			ServerID = PixelLink.resolve(ServerHostname)
+			if not ServerID then
+				print("Serveur '"..ServerHostname.."' introuvable, nouvelle tentative dans 5s.")
+				os.sleep(5)
+			end
+		end
+		print("Serveur résolu : ID #"..ServerID)
 
 		while true do
 			while not ServerConnected do

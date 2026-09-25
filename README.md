@@ -10,13 +10,14 @@ Programme ComputerCraft pour Turtle bucheron
 Installation du programme : 
   - Dans Minecraft, commencez par placer une turtle dans votre monde, cela va créer un dossier sur votre PC.
   - Dans la turtle, tapez la commande *id*, vous obtiendrez l'ID de votre turtle (numéro unique).
-  - Téléchargez le fichier *Bucheron.lua*, puis copiez le dans : **saves/*MONDE*/computercraft/computer/*id*/** (le dossier *saves* se trouve dans votre dossier d'instance Minecraft/FTB).
-  - Dans votre fichier *startup.lua* de ce même dossier, vous pouvez taper (peut dépendre de votre version de CC:Tweaked) :
+  - Téléchargez les fichiers *Bucheron.lua* et *startup.lua*, puis copiez les dans : **saves/*MONDE*/computercraft/computer/*id*/** (le dossier *saves* se trouve dans votre dossier d'instance Minecraft/FTB).
+  - Le programme *Bucheron.lua* est désormais strictement identique sur toutes vos turtles bucheron : toute la configuration propre à une instance (nom du serveur à rejoindre) se fait exclusivement dans *startup.lua*.
+  - Ouvrez *startup.lua* et adaptez si besoin `SERVER_HOSTNAME` au nom de service annoncé par votre serveur sur le réseau PixelLink (`bucheron_server` par défaut) :
 ```
-*local METIER = "Bucheron"
-shell.run(METIER)*
+local METIER = "Bucheron"
+local SERVER_HOSTNAME = "bucheron_server"
+shell.run(METIER, SERVER_HOSTNAME)
 ```
-  - Autre solution : copiez le code contenu dans *Bucheron.lua* dans votre *startup.lua*.
   - Retournez ensuite dans Minecraft, puis, dans votre Turtle, maintenez Ctrl + R jusqu'à ce qu'elle redémarre. Le programme bucheron se lance.
 
 ## Exemple de structure d'une ferme à bois : 
@@ -28,7 +29,7 @@ shell.run(METIER)*
 ---
 
 # Programme : Turtle Bucheron
-## Version : 5.0-alpha01
+## Version : 5.0-alpha02
 ### Génération : Lumen 🔆
 
 ### Patchnote : 
@@ -81,8 +82,6 @@ Modification du programme en conséquence.*
 Ajout de la fonction de détection du sens de rotation intelligente.  
 Consolidation des fonctions de communication PixelLink.*
 
-</details>
-
 *5.0-alpha01 : Implémentation de touches tactiles sur l'écran du serveur.  
 Suppression de l'autorisation de marche via un levier redstone.  
 Consolidation des fonctions de communication PixelLink.  
@@ -95,6 +94,13 @@ Gestion d'un obstacle bloquant le calibrage de position au démarrage (dégageme
 Vérification effective du succès de chaque ravitaillement (buches/carburant/pousses), avec remontée d'erreur en cas d'échec.  
 Recalcul complet des besoins d'inventaire à chaque passage, pour éviter toute dérive.  
 Correction de la persistance de l'état "Turtle connectée" qui ne redevenait jamais NON après une perte de connexion réelle.*
+
+</details>
+
+*5.0-alpha02 : Découverte du serveur par nom de service (PixelLink.resolve) au lieu d'un ID codé en dur, avec nouvelle tentative périodique tant que le serveur n'est pas trouvé.  
+Le nom du serveur à rejoindre se configure désormais uniquement dans *startup.lua* (argument passé au programme) : *Bucheron.lua* reste strictement identique sur toutes les turtles.  
+Correction d'un bug de dérive de hauteur ("escalier") lors de l'abattage d'arbres consécutifs, désormais ancrée sur la position GPS réelle plutôt que sur un comptage de déplacements.  
+Relèvement du seuil de déclenchement du tri/dépose du bois pour réduire la fréquence des `turtle.transferTo()`, coûteux en temps d'exécution, et fluidifier le fonctionnement de la turtle.*
 
 ### Roadmap :
 
@@ -137,13 +143,11 @@ Chaque génération regroupe une évolution majeure commune à toutes les turtle
 > Le module PixelLink, [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/PixelLink), doit être installé sur la Turtle.
 
 > [!TIP]
-> Le programme du serveur bucheron 5.0-alpha01 est [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur_Bucheron).
+> Le programme du serveur bucheron 5.0-alpha02 est [disponible sur GitHub](https://github.com/ValDin08/ComputerCraft_Reseau/tree/main/Serveur_Bucheron).
 
 > [!WARNING]
 > Pour le bon fonctionnement de votre Turtle, il faut adapter les coordonnées ci-dessous à votre installation :
 > <img width="1407" height="380" alt="image" src="https://github.com/user-attachments/assets/be7f7b5d-6331-40ab-8610-66999624b9bd" />
 
-
 > [!WARNING]
-> Pour le bon fonctionnement de votre Turtle, il faut adapter l'ID du serveur et le côté où se situe votre Modem :
-> <img width="1001" height="182" alt="image" src="https://github.com/user-attachments/assets/c485b2db-7ea6-4c09-a44b-e4e84dbb856f" />
+> Depuis la v5.0-alpha02, la Turtle retrouve automatiquement le serveur par son nom de service (plus besoin d'ID codé en dur) : seul le nom (dans *startup.lua*) et le côté du Modem (variable `ModemSide` dans *Bucheron.lua*) doivent correspondre à votre installation.
